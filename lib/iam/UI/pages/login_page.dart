@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import '../../services/auth_service.dart';
 import 'package:mind_track_flutter_app/shared/model/user_entity.dart';
 import 'register_page.dart';
+import 'professional_main_page.dart';
+import 'patient_main_page.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -31,6 +33,35 @@ class _LoginPageState extends State<LoginPage> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Login successful. User ID: ${response['userId']}')),
       );
+
+      final userId = response['userId'];
+      final token = response['token'];
+      final roles = List<String>.from(response['roles']);
+      print(roles);
+
+      if (roles.contains("PROFESSIONAL")) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => ProfessionalMainPage(
+              professionalId: userId,
+              token: token,
+            ),
+          ),
+        );
+      }
+      if (roles.contains("PATIENT")) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => PatientMainPage(
+              patientId: userId,
+              token: token,
+            ),
+          ),
+        );
+      }
+
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Login failed: $e')),

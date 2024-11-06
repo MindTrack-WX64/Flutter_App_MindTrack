@@ -18,7 +18,8 @@ class AuthService extends BaseService<User> {
       final responseBody = json.decode(response.body);
       final token = responseBody['token'];
       final userId = responseBody['id'];
-      return {'token': token, 'userId': userId as int};
+      final roles = responseBody['roles'];
+      return {'token': token, 'userId': userId as int, 'roles': roles};
     } else {
       throw Exception('Failed to authenticate');
     }

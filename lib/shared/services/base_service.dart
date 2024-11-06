@@ -17,8 +17,13 @@ abstract class BaseService<T> {
     }
   }
 
-  Future<T> getById(String id) async {
-    final response = await http.get(Uri.parse('$apiUrl/$resourceEndPoint/$id'));
+  Future<T> getById(String id, String token) async {
+    final response = await http.get(
+      Uri.parse('$apiUrl/$resourceEndPoint/$id'),
+      headers: {
+        'Authorization': 'Bearer $token',
+      },
+    );
     if (response.statusCode == 200) {
       return fromJson(json.decode(response.body));
     } else {
@@ -26,15 +31,19 @@ abstract class BaseService<T> {
     }
   }
 
-  Future<void> create(T item) async {
+  Future<http.Response> create(T item, String token) async {
     final response = await http.post(
       Uri.parse('$apiUrl/$resourceEndPoint'),
-      headers: {'Content-Type': 'application/json'},
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
       body: json.encode(toJson(item)),
     );
     if (response.statusCode != 201) {
       throw Exception('Failed to create item');
     }
+    return response;
   }
 
   Future<void> update(String id, T item) async {
