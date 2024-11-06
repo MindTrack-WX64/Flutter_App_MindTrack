@@ -18,8 +18,13 @@ class TreatmentService extends BaseService<TreatmentPlan> {
   }
 
 
-  Future<List<TreatmentPlan>> getByPatientId(int patientId) async {
-    final response = await http.get(Uri.parse('$apiUrl$resourceEndPoint?patientId=$patientId'));
+  Future<List<TreatmentPlan>> getByPatientId(int patientId, String token) async {
+    final response = await http.get(
+      Uri.parse('$apiUrl/$resourceEndPoint/patient/$patientId'),
+      headers: {
+        'Authorization': 'Bearer $token',
+      },
+    );
     if (response.statusCode == 200) {
       Iterable list = json.decode(response.body);
       return list.map((model) => fromJson(model)).toList();
@@ -28,8 +33,13 @@ class TreatmentService extends BaseService<TreatmentPlan> {
     }
   }
 
-  Future<List<TreatmentPlan>> getByProfessionalId(int professionalId) async {
-    final response = await http.get(Uri.parse('$apiUrl$resourceEndPoint?professionalId=$professionalId'));
+  Future<List<TreatmentPlan>> getByProfessionalId(int professionalId, String token) async {
+    final response = await http.get(
+      Uri.parse('$apiUrl$resourceEndPoint/professional/$professionalId'),
+      headers: {
+        'Authorization': 'Bearer $token',
+      },
+    );
     if (response.statusCode == 200) {
       Iterable list = json.decode(response.body);
       return list.map((model) => fromJson(model)).toList();
