@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mind_track_flutter_app/iam/UI/pages/new_patient_page.dart';
-
+import 'package:mind_track_flutter_app/patient-management/UI/pages/patient-list.dart';
 class ProfessionalMainPage extends StatelessWidget {
   final int professionalId;
   final String token;
@@ -28,7 +28,15 @@ class ProfessionalMainPage extends StatelessWidget {
           children: [
             ElevatedButton(
               onPressed: () {
-                // Handle patient management button press
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ProfessionalPatientsPage(
+                      professionalId: professionalId,
+                      token: token,
+                    ),
+                  ),
+                );
               },
               child: Text('Patient Management'),
               style: ElevatedButton.styleFrom(
