@@ -22,67 +22,79 @@ class ProfessionalMainPage extends StatelessWidget {
           ),
         ],
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            ElevatedButton.icon(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => ProfessionalPatientsPage(
-                      professionalId: professionalId,
-                      token: token,
-                    ),
+      body: Stack(
+        children: [
+          Container(
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage('assets/bg-professional-main.png'),
+                fit: BoxFit.cover,
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                ElevatedButton.icon(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => ProfessionalPatientsPage(
+                          professionalId: professionalId,
+                          token: token,
+                        ),
+                      ),
+                    );
+                  },
+                  icon: Icon(Icons.people, color: Colors.white),
+                  label: Text('Patient Management'),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.blue, // Background color
+                    foregroundColor: Colors.white, // Text color
+                    minimumSize: Size(double.infinity, 60),
                   ),
-                );
-              },
-              icon: Icon(Icons.people, color: Colors.white),
-              label: Text('Patient Management'),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.blue, // Background color
-                foregroundColor: Colors.white, // Text color
-                minimumSize: Size(double.infinity, 60),
-              ),
-            ),
-            SizedBox(height: 20),
-            ElevatedButton.icon(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => NewPatientPage(
-                      token: token,
-                      professionalId: professionalId,
-                    ),
+                ),
+                SizedBox(height: 20),
+                ElevatedButton.icon(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => NewPatientPage(
+                          token: token,
+                          professionalId: professionalId,
+                        ),
+                      ),
+                    );
+                  },
+                  icon: Icon(Icons.person_add, color: Colors.white),
+                  label: Text('Add Patient'),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.blue, // Background color
+                    foregroundColor: Colors.white, // Text color
+                    minimumSize: Size(double.infinity, 60),
                   ),
-                );
-              },
-              icon: Icon(Icons.person_add, color: Colors.white),
-              label: Text('Add Patient'),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.blue, // Background color
-                foregroundColor: Colors.white, // Text color
-                minimumSize: Size(double.infinity, 60),
-              ),
+                ),
+                SizedBox(height: 20),
+                ElevatedButton.icon(
+                  onPressed: () {
+                    // Handle appointments button press
+                  },
+                  icon: Icon(Icons.calendar_today, color: Colors.white),
+                  label: Text('Appointments'),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.blue, // Background color
+                    foregroundColor: Colors.white, // Text color
+                    minimumSize: Size(double.infinity, 60),
+                  ),
+                ),
+              ],
             ),
-            SizedBox(height: 20),
-            ElevatedButton.icon(
-              onPressed: () {
-                // Handle appointments button press
-              },
-              icon: Icon(Icons.calendar_today, color: Colors.white),
-              label: Text('Appointments'),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.blue, // Background color
-                foregroundColor: Colors.white, // Text color
-                minimumSize: Size(double.infinity, 60),
-              ),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
