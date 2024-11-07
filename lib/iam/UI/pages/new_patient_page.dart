@@ -27,6 +27,8 @@ class _NewPatientPageState extends State<NewPatientPage> {
   final _emailController = TextEditingController();
   final _phoneController = TextEditingController();
   final _birthDateController = TextEditingController();
+  final _backgroundController = TextEditingController();
+  final _consultationReasonController = TextEditingController();
 
   void _createPatient() async {
     if (_formKey.currentState!.validate()) {
@@ -45,7 +47,6 @@ class _NewPatientPageState extends State<NewPatientPage> {
       final treatmentService = TreatmentService();
       final prescriptionService = PrescriptionService();
 
-      
       try {
         print(newPatient.toJson());
         print(widget.token);
@@ -56,13 +57,11 @@ class _NewPatientPageState extends State<NewPatientPage> {
           SnackBar(content: Text('Patient created successfully with ID: $patientId')),
         );
 
-
-
         final newClinicalHistory = ClinicalHistory(
           patientId: patientId,
-          background: 'nr',
-          consultationReason: 'nr',
-          consultationDate: DateTime.now().toIso8601String()
+          background: _backgroundController.text,
+          consultationReason: _consultationReasonController.text,
+          consultationDate: DateTime.now().toIso8601String(),
         );
 
         print("in clinical service");
@@ -70,9 +69,9 @@ class _NewPatientPageState extends State<NewPatientPage> {
         await clinicalHistoryService.createClinicalHistory(newClinicalHistory, widget.token);
 
         final newTreatmentPlan = TreatmentPlan.basic(
-         patientId: patientId,
-         professionalId: widget.professionalId,
-         description: " ",
+          patientId: patientId,
+          professionalId: widget.professionalId,
+          description: " ",
         );
         print("in treatment service");
         print(newTreatmentPlan.toJson());
@@ -86,9 +85,7 @@ class _NewPatientPageState extends State<NewPatientPage> {
           "endDate": DateTime.now().toIso8601String(),
         };
 
-
         await prescriptionService.createPrescription(prescriptionData, widget.token);
-
 
         Navigator.pop(context);
       } catch (e) {
@@ -168,6 +165,26 @@ class _NewPatientPageState extends State<NewPatientPage> {
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Please enter a birth date';
+                  }
+                  return null;
+                },
+              ),
+              TextFormField(
+                controller: _backgroundController,
+                decoration: InputDecoration(labelText: 'Background'),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter a background';
+                  }
+                  return null;
+                },
+              ),
+              TextFormField(
+                controller: _consultationReasonController,
+                decoration: InputDecoration(labelText: 'Consultation Reason'),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter a consultation reason';
                   }
                   return null;
                 },

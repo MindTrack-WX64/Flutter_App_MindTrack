@@ -57,26 +57,6 @@ class PatientMainPage extends StatelessWidget {
             SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
-                // Handle mood state button press
-              },
-              child: Text('Mood State'),
-              style: ElevatedButton.styleFrom(
-                minimumSize: Size(double.infinity, 60),
-              ),
-            ),
-            SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {
-                // Handle biological functions button press
-              },
-              child: Text('Biological Functions'),
-              style: ElevatedButton.styleFrom(
-                minimumSize: Size(double.infinity, 60),
-              ),
-            ),
-            SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {
                 // Handle prescription button press
               },
               child: Text('Prescription'),
