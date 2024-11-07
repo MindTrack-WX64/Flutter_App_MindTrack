@@ -9,7 +9,7 @@ class PrescriptionService extends BaseService<Prescription> {
 
 
   Future<http.Response> addPill(int prescriptionId, Map<String, dynamic> pillData, String token) async {
-    final response = await http.post(
+    final response = await http.put(
       Uri.parse('$apiUrl$resourceEndPoint/$prescriptionId/pills'),
       headers: {
         'Content-Type': 'application/json',
