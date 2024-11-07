@@ -2,7 +2,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 abstract class BaseService<T> {
-  final String apiUrl = 'http://10.0.2.2:8080/api/v1';
+  final String apiUrl = 'https://mindtrackbackend-dgh8e0bxhucbhebg.canadacentral-01.azurewebsites.net/api/v1';
   String resourceEndPoint;
 
   BaseService({this.resourceEndPoint = 'default-endpoint'});
