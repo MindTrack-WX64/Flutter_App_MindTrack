@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mind_track_flutter_app/iam/UI/pages/new_patient_page.dart';
 import 'package:mind_track_flutter_app/patient-management/UI/pages/patient-list.dart';
+
 class ProfessionalMainPage extends StatelessWidget {
   final int professionalId;
   final String token;
@@ -26,7 +27,7 @@ class ProfessionalMainPage extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            ElevatedButton(
+            ElevatedButton.icon(
               onPressed: () {
                 Navigator.push(
                   context,
@@ -38,13 +39,16 @@ class ProfessionalMainPage extends StatelessWidget {
                   ),
                 );
               },
-              child: Text('Patient Management'),
+              icon: Icon(Icons.people, color: Colors.white),
+              label: Text('Patient Management'),
               style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.blue, // Background color
+                foregroundColor: Colors.white, // Text color
                 minimumSize: Size(double.infinity, 60),
               ),
             ),
             SizedBox(height: 20),
-            ElevatedButton(
+            ElevatedButton.icon(
               onPressed: () {
                 Navigator.push(
                   context,
@@ -56,18 +60,24 @@ class ProfessionalMainPage extends StatelessWidget {
                   ),
                 );
               },
-              child: Text('Add Patient'),
+              icon: Icon(Icons.person_add, color: Colors.white),
+              label: Text('Add Patient'),
               style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.blue, // Background color
+                foregroundColor: Colors.white, // Text color
                 minimumSize: Size(double.infinity, 60),
               ),
             ),
             SizedBox(height: 20),
-            ElevatedButton(
+            ElevatedButton.icon(
               onPressed: () {
                 // Handle appointments button press
               },
-              child: Text('Appointments'),
+              icon: Icon(Icons.calendar_today, color: Colors.white),
+              label: Text('Appointments'),
               style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.blue, // Background color
+                foregroundColor: Colors.white, // Text color
                 minimumSize: Size(double.infinity, 60),
               ),
             ),
