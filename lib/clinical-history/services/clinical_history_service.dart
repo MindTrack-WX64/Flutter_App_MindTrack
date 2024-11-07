@@ -27,8 +27,32 @@ class ClinicalHistoryService extends BaseService<ClinicalHistory> {
     return response;
   }
 
+  Future<ClinicalHistory> getByPatientId(int patientId, String token) async {
+    final response = await http.get(
+      Uri.parse('$apiUrl$resourceEndPoint/patient/$patientId'),
+      headers: {
+        'Authorization': 'Bearer $token',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      final List<dynamic> clinicalHistoryList = json.decode(response.body);
+      if (clinicalHistoryList.isNotEmpty) {
+        final Map<String, dynamic> clinicalHistory = clinicalHistoryList[0];
+        return ClinicalHistory.fromJson(clinicalHistory);
+      } else {
+        throw Exception('Clinical history list is empty');
+      }
+    } else {
+      throw Exception('Failed to load clinical history');
+    }
+  }
+
+
+
   @override
-  ClinicalHistory fromJson(Map<String, dynamic> json) {
+  ClinicalHistory fromJson(Map<String,dynamic> json) {
+    print("On from json");
     return ClinicalHistory.fromJson(json);
   }
 
