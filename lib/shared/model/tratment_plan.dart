@@ -1,4 +1,5 @@
 class TreatmentPlan {
+  final int? treatmentPlanId; // New attribute
   final int patientId;
   final int professionalId;
   final DateTime startDate;
@@ -12,6 +13,7 @@ class TreatmentPlan {
   final List<String> tasks;
 
   TreatmentPlan({
+    this.treatmentPlanId,// New attribute
     required this.patientId,
     required this.professionalId,
     required this.startDate,
@@ -32,7 +34,8 @@ class TreatmentPlan {
     required this.description,
   })  :
         startDate = DateTime.now(),
-        endDate = "2024-01-01",
+        treatmentPlanId = 0,
+        endDate = "undefined",
         isFinished = false,
         sessions = [],
         patientStates = [],
@@ -42,6 +45,7 @@ class TreatmentPlan {
 
   factory TreatmentPlan.fromJson(Map<String, dynamic> json) {
     return TreatmentPlan(
+      treatmentPlanId: json['treatmentPlanId'], // New attribute
       patientId: json['patientId'],
       professionalId: json['professionalId'],
       startDate: DateTime.parse(json['startDate']),
@@ -58,6 +62,7 @@ class TreatmentPlan {
 
   Map<String, dynamic> toJson() {
     return {
+      'treatmentPlanId': treatmentPlanId, // New attribute
       'patientId': patientId,
       'professionalId': professionalId,
       'startDate': startDate.toIso8601String(),
@@ -75,6 +80,7 @@ class TreatmentPlan {
   // Additional toJson method
   Map<String, dynamic> toBasicJson() {
     return {
+      'treatmentPlanId': treatmentPlanId, // New attribute
       'patientId': patientId,
       'professionalId': professionalId,
       'description': description,
