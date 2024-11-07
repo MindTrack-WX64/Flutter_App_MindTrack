@@ -6,6 +6,7 @@ import 'package:mind_track_flutter_app/iam/services/new_patient_service.dart';
 import 'package:mind_track_flutter_app/clinical-history/model/clinical_history_entity.dart';
 import 'package:mind_track_flutter_app/shared/model/tratment_plan.dart';
 import 'package:mind_track_flutter_app/shared/services/treatment_service.dart';
+import "package:mind_track_flutter_app/prescription-management/service/prescription_service.dart";
 
 class NewPatientPage extends StatefulWidget {
   final String token;
@@ -30,6 +31,7 @@ class _NewPatientPageState extends State<NewPatientPage> {
   void _createPatient() async {
     if (_formKey.currentState!.validate()) {
       final newPatient = Patient(
+        patientId: 0,
         username: _usernameController.text,
         password: _passwordController.text,
         fullName: _fullNameController.text,
@@ -41,6 +43,7 @@ class _NewPatientPageState extends State<NewPatientPage> {
       final newPatientService = NewPatientService();
       final clinicalHistoryService = ClinicalHistoryService();
       final treatmentService = TreatmentService();
+      final prescriptionService = PrescriptionService();
 
       
       try {
@@ -57,9 +60,9 @@ class _NewPatientPageState extends State<NewPatientPage> {
 
         final newClinicalHistory = ClinicalHistory(
           patientId: patientId,
-          background: 'notregistered',
-          consultationReason: 'notregistered',
-          consultationDate: DateTime.now().toIso8601String(),
+          background: 'nr',
+          consultationReason: 'nr',
+          consultationDate: DateTime.now().toIso8601String()
         );
 
         print("in clinical service");
@@ -69,12 +72,23 @@ class _NewPatientPageState extends State<NewPatientPage> {
         final newTreatmentPlan = TreatmentPlan.basic(
          patientId: patientId,
          professionalId: widget.professionalId,
-         description: "not registered",
+         description: " ",
         );
         print("in treatment service");
         print(newTreatmentPlan.toJson());
 
         await treatmentService.createTreatmentPlan(newTreatmentPlan, widget.token);
+
+        final prescriptionData = {
+          "patientId": patientId,
+          "professionalId": widget.professionalId,
+          "startDate": DateTime.now().toIso8601String(),
+          "endDate": DateTime.now().toIso8601String(),
+        };
+
+
+        await prescriptionService.createPrescription(prescriptionData, widget.token);
+
 
         Navigator.pop(context);
       } catch (e) {

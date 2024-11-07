@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:mind_track_flutter_app/shared/services/treatment_service.dart';
 import 'package:mind_track_flutter_app/shared/services/patient_service.dart';
-import "package:mind_track_flutter_app/shared/model/patient_entity.dart";
+import 'package:mind_track_flutter_app/clinical-history/UI/pages/clinical_professional_view.dart';
+import 'package:mind_track_flutter_app/diagnostic/UI/pages/diagnosticView.dart';
+import 'package:mind_track_flutter_app/shared/model/patient_entity.dart';
+import 'package:mind_track_flutter_app/prescription-management/UI/pages/prescription_view.dart';
 
 class ProfessionalPatientsPage extends StatefulWidget {
   final int professionalId;
@@ -25,23 +28,14 @@ class _ProfessionalPatientsPageState extends State<ProfessionalPatientsPage> {
   Future<List<Patient>> _fetchPatients() async {
     final treatmentService = TreatmentService();
     final patientService = PatientService();
-    print("Fetching patients for professionalId: ${widget.professionalId} with token: ${widget.token}");
-
-    print("In _fetchPatients");
     final treatments = await treatmentService.getByProfessionalId(widget.professionalId, widget.token);
-    print("In _fetchPatients2");
-    print("Fetched treatments: $treatments");
-
     final patientIds = treatments.map((treatment) => treatment.patientId).toSet();
-    print("Patient IDs: $patientIds");
 
     List<Patient> patients = [];
     for (int patientId in patientIds) {
       final patient = await patientService.getByPatientId(patientId, widget.token);
-      print("Fetched patient: $patient");
       patients.add(patient);
     }
-    print("All fetched patients: $patients");
     return patients;
   }
 
@@ -53,6 +47,28 @@ class _ProfessionalPatientsPageState extends State<ProfessionalPatientsPage> {
       age--;
     }
     return age;
+  }
+
+  Future<void> _navigateToDiagnostics(BuildContext context, int patientId) async {
+    final treatmentService = TreatmentService();
+
+    try {
+      final treatmentPlanId = await treatmentService.getTreatmentPlanIdByPatientId(patientId, widget.token);
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => DiagnosticView(
+            token: widget.token,
+            treatmentId: treatmentPlanId,
+          ),
+        ),
+      );
+    } catch (e) {
+      print('Error fetching treatment plan ID: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to load treatment plan ID')),
+      );
+    }
   }
 
   @override
@@ -98,9 +114,39 @@ class _ProfessionalPatientsPageState extends State<ProfessionalPatientsPage> {
                         Wrap(
                           spacing: 8,
                           children: [
-                            ElevatedButton(onPressed: () {}, child: Text('Clinical History')),
-                            ElevatedButton(onPressed: () {}, child: Text('Diagnostic')),
-                            ElevatedButton(onPressed: () {}, child: Text('Prescription')),
+                            ElevatedButton(
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => ClinicalHistoryPage(
+                                      patientId: patient.patientId,
+                                      token: widget.token,
+                                    ),
+                                  ),
+                                );
+                              },
+                              child: Text('Clinical History'),
+                            ),
+                            ElevatedButton(
+                              onPressed: () => _navigateToDiagnostics(context, patient.patientId),
+                              child: Text('Diagnostic'),
+                            ),
+                            ElevatedButton(
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => PrescriptionView(
+                                      patientId: patient.patientId,
+                                      professionalId: widget.professionalId,
+                                      token: widget.token,
+                                    ),
+                                  ),
+                                );
+                              },
+                              child: Text('Prescription'),
+                            ),
                             ElevatedButton(onPressed: () {}, child: Text('Patient Status')),
                             ElevatedButton(onPressed: () {}, child: Text('Tasks')),
                             ElevatedButton(onPressed: () {}, child: Text('Session')),

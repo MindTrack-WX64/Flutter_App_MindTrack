@@ -1,42 +1,30 @@
 import 'package:flutter/material.dart';
-import '../../model/clinical_history_entity.dart';
-import '../../services/clinical_history_service.dart';
+import 'package:mind_track_flutter_app/clinical-history/services/clinical_history_service.dart';
+import 'package:mind_track_flutter_app/clinical-history/model/clinical_history_entity.dart';
 
-class ClinicalHistoryViewPage extends StatefulWidget {
-  final int clinicalId;
+class ClinicalHistoryPage extends StatefulWidget {
+  final int patientId;
   final String token;
 
-  ClinicalHistoryViewPage({required this.clinicalId, required this.token});
+  ClinicalHistoryPage({required this.patientId, required this.token});
 
   @override
-  _ClinicalHistoryViewPageState createState() => _ClinicalHistoryViewPageState();
+  _ClinicalHistoryPageState createState() => _ClinicalHistoryPageState();
 }
 
-class _ClinicalHistoryViewPageState extends State<ClinicalHistoryViewPage> {
-  late ClinicalHistoryService _clinicalHistoryService;
-  ClinicalHistory? _clinicalHistory;
-  bool _isLoading = true;
+class _ClinicalHistoryPageState extends State<ClinicalHistoryPage> {
+  late Future<ClinicalHistory> _clinicalHistoryFuture;
 
   @override
   void initState() {
+    print("on clinical page");
     super.initState();
-    _clinicalHistoryService = ClinicalHistoryService();
-    _fetchClinicalHistory();
+    _clinicalHistoryFuture = _fetchClinicalHistory();
   }
 
-  Future<void> _fetchClinicalHistory() async {
-    try {
-      ClinicalHistory clinicalHistory = await _clinicalHistoryService.getById(widget.clinicalId.toString(),widget.token);
-      setState(() {
-        _clinicalHistory = clinicalHistory;
-        _isLoading = false;
-      });
-    } catch (e) {
-      setState(() {
-        _isLoading = false;
-      });
-      // Handle error
-    }
+  Future<ClinicalHistory> _fetchClinicalHistory() async {
+    final clinicalHistoryService = ClinicalHistoryService();
+    return await clinicalHistoryService.getByPatientId(widget.patientId, widget.token);
   }
 
   @override
@@ -45,37 +33,46 @@ class _ClinicalHistoryViewPageState extends State<ClinicalHistoryViewPage> {
       appBar: AppBar(
         title: Text('Clinical History'),
       ),
-      body: _isLoading
-          ? Center(child: CircularProgressIndicator())
-          : _clinicalHistory == null
-          ? Center(child: Text('Failed to load clinical history'))
-          : Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            TextFormField(
-              initialValue: _clinicalHistory!.patientId.toString(),
-              decoration: InputDecoration(labelText: 'Patient ID'),
-              readOnly: true,
-            ),
-            TextFormField(
-              initialValue: _clinicalHistory!.background,
-              decoration: InputDecoration(labelText: 'Background'),
-              readOnly: true,
-            ),
-            TextFormField(
-              initialValue: _clinicalHistory!.consultationReason,
-              decoration: InputDecoration(labelText: 'Consultation Reason'),
-              readOnly: true,
-            ),
-            TextFormField(
-              initialValue: _clinicalHistory!.consultationDate,
-              decoration: InputDecoration(labelText: 'Consultation Date'),
-              readOnly: true,
-            ),
-          ],
-        ),
+      body: FutureBuilder<ClinicalHistory>(
+        future: _clinicalHistoryFuture,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasError) {
+            return Center(child: Text('Error: ${snapshot.error}'));
+          } else if (!snapshot.hasData) {
+            return Center(child: Text('No clinical history found'));
+          } else {
+            final clinicalHistory = snapshot.data!;
+            return Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Form(
+                child: ListView(
+                  children: [
+                    TextFormField(
+                      initialValue: clinicalHistory.background,
+                      decoration: InputDecoration(labelText: 'Background'),
+                      readOnly: true,
+                      maxLines: 5, // Make the TextFormField larger
+                    ),
+                    TextFormField(
+                      initialValue: clinicalHistory.consultationReason,
+                      decoration: InputDecoration(labelText: 'Consultation Reason'),
+                      readOnly: true,
+                      maxLines: 5, // Make the TextFormField larger
+                    ),
+                    TextFormField(
+                      initialValue: clinicalHistory.consultationDate,
+                      decoration: InputDecoration(labelText: 'Consultation Date'),
+                      readOnly: true,
+                      maxLines: 1,
+                    ),
+                  ],
+                ),
+              ),
+            );
+          }
+        },
       ),
     );
   }
