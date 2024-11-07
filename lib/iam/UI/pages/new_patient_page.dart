@@ -40,6 +40,8 @@ class _NewPatientPageState extends State<NewPatientPage> {
 
       final newPatientService = NewPatientService();
       final clinicalHistoryService = ClinicalHistoryService();
+      final treatmentService = TreatmentService();
+
       
       try {
         print(newPatient.toJson());
@@ -50,16 +52,31 @@ class _NewPatientPageState extends State<NewPatientPage> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Patient created successfully with ID: $patientId')),
         );
+
+
+
         final newClinicalHistory = ClinicalHistory(
           patientId: patientId,
-          background: '',
-          consultationReason: '',
-          consultationDate: DateTime.now().toString(),
+          background: 'notregistered',
+          consultationReason: 'notregistered',
+          consultationDate: DateTime.now().toIso8601String(),
         );
 
-        await clinicalHistoryService.create(newClinicalHistory, widget.token);
+        print("in clinical service");
+        print(newClinicalHistory.toJson());
+        await clinicalHistoryService.createClinicalHistory(newClinicalHistory, widget.token);
 
+        final newTreatmentPlan = TreatmentPlan.basic(
+         patientId: patientId,
+         professionalId: widget.professionalId,
+         description: "not registered",
+        );
+        print("in treatment service");
+        print(newTreatmentPlan.toJson());
 
+        await treatmentService.createTreatmentPlan(newTreatmentPlan, widget.token);
+
+        Navigator.pop(context);
       } catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Failed to create patient: $e')),

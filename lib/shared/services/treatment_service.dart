@@ -6,17 +6,23 @@ import '../model/tratment_plan.dart';
 class TreatmentService extends BaseService<TreatmentPlan> {
   TreatmentService() : super(resourceEndPoint: '/treatment-plans');
 
-  @override
-  Future<List<TreatmentPlan>> getAll() async {
-    final response = await http.get(Uri.parse('$apiUrl$resourceEndPoint'));
-    if (response.statusCode == 200) {
-      Iterable list = json.decode(response.body);
-      return list.map((model) => fromJson(model)).toList();
-    } else {
-      throw Exception('Failed to load data');
-    }
-  }
 
+  Future<http.Response> createTreatmentPlan(TreatmentPlan treatmentPlan, String token) async {
+    final treatmentPlanJson = json.encode(treatmentPlan.toJson());
+    final response = await http.post(
+      Uri.parse('$apiUrl$resourceEndPoint'),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+      body: treatmentPlanJson,
+    );
+
+    if (response.statusCode != 201) {
+      throw Exception('Failed to create treatment plan');
+    }
+    return response;
+  }
 
   Future<List<TreatmentPlan>> getByPatientId(int patientId, String token) async {
     final response = await http.get(
