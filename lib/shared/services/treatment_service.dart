@@ -97,6 +97,58 @@ class TreatmentService extends BaseService<TreatmentPlan> {
     }
   }
 
+  Future<List<String>> getTasksByPatientId(int patientId, String token) async {
+    print("on task service");
+    final response = await http.get(
+      Uri.parse('$apiUrl$resourceEndPoint/patient/$patientId'),
+      headers: {
+        'Authorization': 'Bearer $token',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      print("on task if");
+      final responseBody = response.body;
+      print("Response body: $responseBody");
+      final List<dynamic> treatmentPlans = json.decode(responseBody);
+
+      if (treatmentPlans.isNotEmpty && treatmentPlans[0] is Map<String, dynamic>) {
+        final treatmentPlan = treatmentPlans[0];
+        if (treatmentPlan.containsKey('tasks')) {
+          final tasks = treatmentPlan['tasks'];
+          if (tasks is List) {
+            return List<String>.from(tasks);
+          } else {
+            throw Exception('Tasks is not a list');
+          }
+        } else {
+          throw Exception('Invalid response structure');
+        }
+      } else {
+        throw Exception('No treatment plans found');
+      }
+    } else {
+      throw Exception('Failed to load tasks');
+    }
+  }
+
+  Future<void> addTasks(int treatmentId, Map<String, String> data, String token) async {
+    final response = await http.put(
+      Uri.parse('$apiUrl$resourceEndPoint/$treatmentId/task'),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+      body: json.encode(data),
+    );
+
+    if (response.statusCode != 200) {
+      throw Exception('Failed to update task');
+    }
+  }
+
+
+
   Future<void> updateDiagnostic(int treatmentId, Map<String, String> data, String token) async {
     final response = await http.put(
       Uri.parse('$apiUrl$resourceEndPoint/$treatmentId/diagnostic'),

@@ -6,6 +6,7 @@ import 'package:mind_track_flutter_app/diagnostic/UI/pages/diagnosticView.dart';
 import 'package:mind_track_flutter_app/shared/model/patient_entity.dart';
 import 'package:mind_track_flutter_app/prescription-management/UI/pages/prescription_view.dart';
 import 'package:mind_track_flutter_app/session-management/UI/pages/session_view.dart';
+import 'package:mind_track_flutter_app/task-management/UI/pages/task_view.dart';
 
 class ProfessionalPatientsPage extends StatefulWidget {
   final int professionalId;
@@ -148,8 +149,21 @@ class _ProfessionalPatientsPageState extends State<ProfessionalPatientsPage> {
                               },
                               child: Text('Prescription'),
                             ),
-                            ElevatedButton(onPressed: () {}, child: Text('Patient Status')),
-                            ElevatedButton(onPressed: () {}, child: Text('Tasks')),
+                          //  ElevatedButton(onPressed: () {}, child: Text('Patient Status')),
+                            ElevatedButton(
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => TasksPage(
+                                      patientId: patient.patientId,
+                                      token: widget.token,
+                                    ),
+                                  ),
+                                );
+                              },
+                              child: Text('Tasks'),
+                            ),
                             ElevatedButton(
                               onPressed: () {
                                 Navigator.push(
