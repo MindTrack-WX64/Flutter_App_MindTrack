@@ -6,7 +6,6 @@ import '../model/tratment_plan.dart';
 class TreatmentService extends BaseService<TreatmentPlan> {
   TreatmentService() : super(resourceEndPoint: '/treatment-plans');
 
-
   Future<http.Response> createTreatmentPlan(TreatmentPlan treatmentPlan, String token) async {
     final treatmentPlanJson = json.encode(treatmentPlan.toJson());
     final response = await http.post(
@@ -17,14 +16,12 @@ class TreatmentService extends BaseService<TreatmentPlan> {
       },
       body: treatmentPlanJson,
     );
-
     if (response.statusCode != 201) {
       throw Exception('Failed to create treatment plan');
     }
     return response;
   }
-
-  Future<List<TreatmentPlan>> getByPatientId(int patientId, String token) async {
+  Future<TreatmentPlan> getByPatientId(int patientId, String token) async {
     final response = await http.get(
       Uri.parse('$apiUrl/$resourceEndPoint/patient/$patientId'),
       headers: {
@@ -32,13 +29,12 @@ class TreatmentService extends BaseService<TreatmentPlan> {
       },
     );
     if (response.statusCode == 200) {
-      Iterable list = json.decode(response.body);
-      return list.map((model) => fromJson(model)).toList();
+      final treatmentPlan = json.decode(response.body);
+      return fromJson(treatmentPlan);
     } else {
       throw Exception('Failed to load data');
     }
   }
-
   Future<List<TreatmentPlan>> getByProfessionalId(int professionalId, String token) async {
     final response = await http.get(
       Uri.parse('$apiUrl$resourceEndPoint/professional/$professionalId'),
@@ -46,15 +42,20 @@ class TreatmentService extends BaseService<TreatmentPlan> {
         'Authorization': 'Bearer $token',
       },
     );
+    print("in treatment service");
     if (response.statusCode == 200) {
-      Iterable list = json.decode(response.body);
-      return list.map((model) => fromJson(model)).toList();
+      print("in treatment service 2");
+      final responseBody = response.body;
+      Iterable list = json.decode(responseBody);
+      List<TreatmentPlan> treatmentPlans = list.map((model) {
+        return fromJson(model);
+      }).toList();
+      print("in treatment service 3");
+      return treatmentPlans;
     } else {
       throw Exception('Failed to load data');
     }
   }
-
-
   @override
   TreatmentPlan fromJson(Map<String, dynamic> json) {
     return TreatmentPlan.fromJson(json);

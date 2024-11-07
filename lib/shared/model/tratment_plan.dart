@@ -2,7 +2,7 @@ class TreatmentPlan {
   final int patientId;
   final int professionalId;
   final DateTime startDate;
-  final DateTime endDate;
+  final String? endDate;
   final bool isFinished;
   final String description;
   final List<Session> sessions;
@@ -15,7 +15,7 @@ class TreatmentPlan {
     required this.patientId,
     required this.professionalId,
     required this.startDate,
-    required this.endDate,
+    this.endDate,
     required this.isFinished,
     required this.description,
     required this.sessions,
@@ -32,7 +32,7 @@ class TreatmentPlan {
     required this.description,
   })  :
         startDate = DateTime.now(),
-        endDate = DateTime.now(),
+        endDate = "2024-01-01",
         isFinished = false,
         sessions = [],
         patientStates = [],
@@ -45,7 +45,7 @@ class TreatmentPlan {
       patientId: json['patientId'],
       professionalId: json['professionalId'],
       startDate: DateTime.parse(json['startDate']),
-      endDate: DateTime.parse(json['endDate']),
+      endDate: json['endDate'],
       isFinished: json['isFinished'],
       description: json['description'],
       sessions: (json['sessions'] as List).map((i) => Session.fromJson(i)).toList(),
@@ -61,7 +61,7 @@ class TreatmentPlan {
       'patientId': patientId,
       'professionalId': professionalId,
       'startDate': startDate.toIso8601String(),
-      'endDate': endDate.toIso8601String(),
+      'endDate': endDate,
       'isFinished': isFinished,
       'description': description,
       'sessions': sessions.map((i) => i.toJson()).toList(),
