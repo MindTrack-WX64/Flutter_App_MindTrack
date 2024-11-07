@@ -12,7 +12,6 @@ class NewPatientPage extends StatefulWidget {
   final String token;
   final int professionalId;
 
-
   NewPatientPage({required this.token, required this.professionalId});
 
   @override
@@ -102,101 +101,234 @@ class _NewPatientPageState extends State<NewPatientPage> {
       appBar: AppBar(
         title: Text('New Patient'),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Form(
-          key: _formKey,
-          child: ListView(
-            children: [
-              TextFormField(
-                controller: _usernameController,
-                decoration: InputDecoration(labelText: 'Username'),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter a username';
-                  }
-                  return null;
-                },
+      body: Stack(
+        children: [
+          Container(
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage('assets/background.png'), // Ruta de la imagen
+                fit: BoxFit.cover,
               ),
-              TextFormField(
-                controller: _passwordController,
-                decoration: InputDecoration(labelText: 'Password'),
-                obscureText: true,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter a password';
-                  }
-                  return null;
-                },
-              ),
-              TextFormField(
-                controller: _fullNameController,
-                decoration: InputDecoration(labelText: 'Full Name'),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter a full name';
-                  }
-                  return null;
-                },
-              ),
-              TextFormField(
-                controller: _emailController,
-                decoration: InputDecoration(labelText: 'Email'),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter an email';
-                  }
-                  return null;
-                },
-              ),
-              TextFormField(
-                controller: _phoneController,
-                decoration: InputDecoration(labelText: 'Phone'),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter a phone number';
-                  }
-                  return null;
-                },
-              ),
-              TextFormField(
-                controller: _birthDateController,
-                decoration: InputDecoration(labelText: 'Birth Date'),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter a birth date';
-                  }
-                  return null;
-                },
-              ),
-              TextFormField(
-                controller: _backgroundController,
-                decoration: InputDecoration(labelText: 'Background'),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter a background';
-                  }
-                  return null;
-                },
-              ),
-              TextFormField(
-                controller: _consultationReasonController,
-                decoration: InputDecoration(labelText: 'Consultation Reason'),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter a consultation reason';
-                  }
-                  return null;
-                },
-              ),
-              SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: _createPatient,
-                child: Text('Create Patient'),
-              ),
-            ],
+            ),
           ),
-        ),
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Center(
+              child: Card(
+                color: Colors.white,
+                elevation: 8.0,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(30.0),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 18.0, horizontal: 20.0),
+                  child: Form(
+                    key: _formKey,
+                    child: ListView(
+                      children: [
+                        TextFormField(
+                          controller: _usernameController,
+                          decoration: InputDecoration(
+                            labelText: 'Username',
+                            prefixIcon: Icon(Icons.person),
+                            enabledBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: Colors.blue),
+                              borderRadius: BorderRadius.circular(25.0),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: Colors.blue),
+                              borderRadius: BorderRadius.circular(25.0),
+                            ),
+                          ),
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Please enter a username';
+                            }
+                            return null;
+                          },
+                        ),
+                        SizedBox(height: 20),
+                        TextFormField(
+                          controller: _passwordController,
+                          decoration: InputDecoration(
+                            labelText: 'Password',
+                            prefixIcon: Icon(Icons.lock),
+                            enabledBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: Colors.blue),
+                              borderRadius: BorderRadius.circular(25.0),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: Colors.blue),
+                              borderRadius: BorderRadius.circular(25.0),
+                            ),
+                          ),
+                          obscureText: true,
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Please enter a password';
+                            }
+                            return null;
+                          },
+                        ),
+                        SizedBox(height: 20),
+                        TextFormField(
+                          controller: _fullNameController,
+                          decoration: InputDecoration(
+                            labelText: 'Full Name',
+                            prefixIcon: Icon(Icons.person),
+                            enabledBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: Colors.blue),
+                              borderRadius: BorderRadius.circular(25.0),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: Colors.blue),
+                              borderRadius: BorderRadius.circular(25.0),
+                            ),
+                          ),
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Please enter a full name';
+                            }
+                            return null;
+                          },
+                        ),
+                        SizedBox(height: 20),
+                        TextFormField(
+                          controller: _emailController,
+                          decoration: InputDecoration(
+                            labelText: 'Email',
+                            prefixIcon: Icon(Icons.email),
+                            enabledBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: Colors.blue),
+                              borderRadius: BorderRadius.circular(25.0),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: Colors.blue),
+                              borderRadius: BorderRadius.circular(25.0),
+                            ),
+                          ),
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Please enter an email';
+                            }
+                            return null;
+                          },
+                        ),
+                        SizedBox(height: 20),
+                        TextFormField(
+                          controller: _phoneController,
+                          decoration: InputDecoration(
+                            labelText: 'Phone',
+                            prefixIcon: Icon(Icons.phone),
+                            enabledBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: Colors.blue),
+                              borderRadius: BorderRadius.circular(25.0),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: Colors.blue),
+                              borderRadius: BorderRadius.circular(25.0),
+                            ),
+                          ),
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Please enter a phone number';
+                            }
+                            return null;
+                          },
+                        ),
+                        SizedBox(height: 20),
+                        TextFormField(
+                          controller: _birthDateController,
+                          decoration: InputDecoration(
+                            labelText: 'Birth Date',
+                            prefixIcon: Icon(Icons.calendar_today),
+                            enabledBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: Colors.blue),
+                              borderRadius: BorderRadius.circular(25.0),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: Colors.blue),
+                              borderRadius: BorderRadius.circular(25.0),
+                            ),
+                          ),
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Please enter a birth date';
+                            }
+                            return null;
+                          },
+                        ),
+                        SizedBox(height: 20),
+                        TextFormField(
+                          controller: _backgroundController,
+                          decoration: InputDecoration(
+                            labelText: 'Background',
+                            prefixIcon: Icon(Icons.history),
+                            enabledBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: Colors.blue),
+                              borderRadius: BorderRadius.circular(25.0),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: Colors.blue),
+                              borderRadius: BorderRadius.circular(25.0),
+                            ),
+                          ),
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Please enter a background';
+                            }
+                            return null;
+                          },
+                        ),
+                        SizedBox(height: 20),
+                        TextFormField(
+                          controller: _consultationReasonController,
+                          decoration: InputDecoration(
+                            labelText: 'Consultation Reason',
+                            prefixIcon: Icon(Icons.question_answer),
+                            enabledBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: Colors.blue),
+                              borderRadius: BorderRadius.circular(25.0),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: Colors.blue),
+                              borderRadius: BorderRadius.circular(25.0),
+                            ),
+                          ),
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Please enter a consultation reason';
+                            }
+                            return null;
+                          },
+                        ),
+                        SizedBox(height: 20),
+                        SizedBox(
+                          width: double.infinity,
+                          child: ElevatedButton(
+                            onPressed: _createPatient,
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.blue, // Background color
+                              foregroundColor: Colors.white, // Text color
+                              padding: EdgeInsets.all(10), // Padding
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(25.0),
+                              ),
+                            ),
+                            child: Text(
+                              'Create Patient',
+                              style: TextStyle(fontSize: 24.0),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
