@@ -6,18 +6,16 @@ import '../../shared/services/base_service.dart';
 class PrescriptionService extends BaseService<Prescription> {
   PrescriptionService() : super(resourceEndPoint: '/prescriptions');
 
-  Future<http.Response> createPrescription(Prescription prescription, String token) async {
-    return await create(prescription, token);
-  }
 
-  Future<http.Response> addPill(int prescriptionId, Pill pill, String token) async {
+
+  Future<http.Response> addPill(int prescriptionId, Map<String, dynamic> pillData, String token) async {
     final response = await http.post(
       Uri.parse('$apiUrl$resourceEndPoint/$prescriptionId/pills'),
       headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $token',
       },
-      body: json.encode(pill.toJson()),
+      body: json.encode(pillData),
     );
 
     if (response.statusCode != 201) {
@@ -26,7 +24,24 @@ class PrescriptionService extends BaseService<Prescription> {
     return response;
   }
 
-  Future<List<Prescription>> findByPatientId(int patientId, String token) async {
+  Future<http.Response> createPrescription(Map<String, dynamic> prescriptionData, String token) async {
+    final response = await http.post(
+      Uri.parse('$apiUrl$resourceEndPoint'),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+      body: json.encode(prescriptionData),
+    );
+
+    if (response.statusCode != 201) {
+      throw Exception('Failed to create prescription');
+    }
+    return response;
+  }
+
+
+  Future<Map<String, dynamic>> findByPatientId(int patientId, String token) async {
     final response = await http.get(
       Uri.parse('$apiUrl$resourceEndPoint?patientId=$patientId'),
       headers: {
@@ -35,12 +50,37 @@ class PrescriptionService extends BaseService<Prescription> {
     );
 
     if (response.statusCode == 200) {
-      Iterable list = json.decode(response.body);
-      return list.map((model) => fromJson(model)).toList();
+      final prescription = json.decode(response.body);
+      if (prescription.isNotEmpty) {
+        print(prescription);
+        return prescription[0];
+      } else {
+        throw Exception('No prescriptions found for patient');
+      }
     } else {
       throw Exception('Failed to load prescriptions');
     }
   }
+  Future<int> getPrescriptionIdByPatientId(int patientId, String token) async {
+    final response = await http.get(
+      Uri.parse('$apiUrl$resourceEndPoint?patientId=$patientId'),
+      headers: {
+        'Authorization': 'Bearer $token',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      final List<dynamic> prescriptions = json.decode(response.body);
+      if (prescriptions.isNotEmpty) {
+        return prescriptions.first['id'];
+      } else {
+        throw Exception('No prescriptions found for patient');
+      }
+    } else {
+      throw Exception('Failed to load prescriptions');
+    }
+  }
+
 
   @override
   Prescription fromJson(Map<String, dynamic> json) {
