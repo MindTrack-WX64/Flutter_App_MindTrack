@@ -1,18 +1,18 @@
 class Patient {
-  final String username;
-  final String password;
+  final String? username;
+  final String? password;
   final String fullName;
   final String email;
-  final String phone;
+  final String? phone;
   final DateTime birthDate;
 
 
   Patient({
-    required this.username,
-    required this.password,
+     this.username = " ",
+     this.password = " ",
     required this.fullName,
     required this.email,
-    required this.phone,
+    this.phone,
     required this.birthDate,
   });
 
