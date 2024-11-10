@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mind_track_flutter_app/session-management/services/session_service.dart';
+import 'package:mind_track_flutter_app/session-management/model/session_entity.dart';
 
 class SessionView extends StatefulWidget {
   final int patientId;
@@ -13,7 +14,7 @@ class SessionView extends StatefulWidget {
 }
 
 class _SessionViewState extends State<SessionView> {
-  late Future<List<Map<String, dynamic>>> _sessionsFuture;
+  late Future<List<SessionEntity>> _sessionsFuture;
 
   @override
   void initState() {
@@ -27,9 +28,9 @@ class _SessionViewState extends State<SessionView> {
     });
   }
 
-  Future<List<Map<String, dynamic>>> _getSessions() async {
+  Future<List<SessionEntity>> _getSessions() async {
     final sessionService = SessionService();
-    final sessions = await sessionService.findByProfessionalId(widget.professionalId, widget.patientId, widget.token);
+    final sessions = await sessionService.findByProfessionalId(widget.professionalId, widget.token);
     if (sessions.isNotEmpty) {
       return sessions;
     } else {
@@ -64,15 +65,14 @@ class _SessionViewState extends State<SessionView> {
             ),
             TextButton(
               onPressed: () async {
-                final sessionData = {
-                  'patientId': widget.patientId,
-                  'professionalId': widget.professionalId,
-                  'sessionDate': _dateController.text,
-                };
+                SessionEntity sessionData = SessionEntity(
+                  patientId: widget.patientId,
+                  professionalId: widget.professionalId,
+                  sessionDate: DateTime.parse(_dateController.text),
+                );
                 try {
-                  print("On try create session");
                   final sessionService = SessionService();
-                  await sessionService.createSession(sessionData, widget.token);
+                  await sessionService.create(sessionData, widget.token);
                   _fetchSessions(); // Refresh the sessions list
                 } catch (e) {
                   // Handle error
@@ -94,7 +94,7 @@ class _SessionViewState extends State<SessionView> {
       appBar: AppBar(
         title: Text('Sessions'),
       ),
-      body: FutureBuilder<List<Map<String, dynamic>>>(
+      body: FutureBuilder<List<SessionEntity>>(
         future: _sessionsFuture,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
@@ -112,7 +112,7 @@ class _SessionViewState extends State<SessionView> {
                 return Card(
                   margin: EdgeInsets.all(8.0),
                   child: ListTile(
-                    title: Text('Date: ${session['sessionDate']}'),
+                    title: Text('Date: ${session.sessionDate}'),
                   ),
                 );
               },

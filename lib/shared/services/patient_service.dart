@@ -8,7 +8,6 @@ class PatientService extends BaseService<Patient> {
 
 
   Future<Patient> getByPatientId(int patientId, String token) async {
-    print('$apiUrl$resourceEndPoint/$patientId');
     final response = await http.get(
       Uri.parse('$apiUrl$resourceEndPoint/$patientId'),
       headers: {
@@ -27,6 +26,27 @@ class PatientService extends BaseService<Patient> {
       return Patient.fromJson(json);
     } else {
       throw Exception('Failed to load patient');
+    }
+  }
+
+  Future<List<Patient>> getPatientsByProfessionalId(int professionalId, String token ) async
+  {
+    final response = await http.get(
+      Uri.parse('$apiUrl$resourceEndPoint/$professionalId'),
+      headers: {
+        'Authorization': 'Bearer $token',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      final responseBody = response.body;
+      Iterable list = json.decode(responseBody);
+      List<Patient> patients = list.map((model) {
+        return fromJson(model);
+      }).toList();
+      return patients;
+    } else {
+      throw Exception('Failed to load data');
     }
   }
 
