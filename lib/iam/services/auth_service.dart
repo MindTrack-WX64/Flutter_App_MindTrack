@@ -4,12 +4,12 @@ import '../../shared/model/user_entity.dart';
 import '../../shared/services/base_service.dart';
 
 class AuthService extends BaseService<User> {
-  AuthService() : super(resourceEndPoint: '/authentication/sign-in');
+  AuthService() : super(resourceEndpoint: '/authentication/sign-in');
 
   Future<Map<String, dynamic>> authenticate(User user) async {
     final userJson = json.encode(user.toJson());
     final response = await http.post(
-      Uri.parse('$apiUrl$resourceEndPoint'),
+      Uri.parse('$apiUrl$resourceEndpoint'),
       headers: {'Content-Type': 'application/json'},
       body: userJson,
     );
@@ -19,6 +19,7 @@ class AuthService extends BaseService<User> {
       final token = responseBody['token'];
       final userId = responseBody['id'];
       final roles = responseBody['roles'];
+      print(token);
       return {'token': token, 'userId': userId as int, 'roles': roles};
     } else {
       throw Exception('Failed to authenticate');

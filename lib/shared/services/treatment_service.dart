@@ -4,12 +4,12 @@ import 'base_service.dart';
 import '../model/tratment_plan.dart';
 
 class TreatmentService extends BaseService<TreatmentPlan> {
-  TreatmentService() : super(resourceEndPoint: '/treatment-plans');
+  TreatmentService() : super(resourceEndpoint: '/treatment-plans');
 
   Future<http.Response> createTreatmentPlan(TreatmentPlan treatmentPlan, String token) async {
     final treatmentPlanJson = json.encode(treatmentPlan.toJson());
     final response = await http.post(
-      Uri.parse('$apiUrl$resourceEndPoint'),
+      Uri.parse('$apiUrl$resourceEndpoint'),
       headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $token',
@@ -23,7 +23,7 @@ class TreatmentService extends BaseService<TreatmentPlan> {
   }
   Future<TreatmentPlan> getByPatientId(int patientId, String token) async {
     final response = await http.get(
-      Uri.parse('$apiUrl$resourceEndPoint/patient/$patientId'),
+      Uri.parse('$apiUrl$resourceEndpoint/patient/$patientId'),
       headers: {
         'Authorization': 'Bearer $token',
       },
@@ -38,7 +38,7 @@ class TreatmentService extends BaseService<TreatmentPlan> {
 
   Future<int> getTreatmentPlanIdByPatientId(int patientId, String token) async {
     final response = await http.get(
-      Uri.parse('$apiUrl$resourceEndPoint/patient/$patientId'),
+      Uri.parse('$apiUrl$resourceEndpoint/patient/$patientId'),
       headers: {
         'Authorization': 'Bearer $token',
       },
@@ -61,7 +61,7 @@ class TreatmentService extends BaseService<TreatmentPlan> {
 
   Future<List<TreatmentPlan>> getByProfessionalId(int professionalId, String token) async {
     final response = await http.get(
-      Uri.parse('$apiUrl$resourceEndPoint/professional/$professionalId'),
+      Uri.parse('$apiUrl$resourceEndpoint/professional/$professionalId'),
       headers: {
         'Authorization': 'Bearer $token',
       },
@@ -83,7 +83,7 @@ class TreatmentService extends BaseService<TreatmentPlan> {
 
   Future<List<String>> getDiagnosticsByTreatmentId(int treatmentId, String token) async {
     final response = await http.get(
-      Uri.parse('$apiUrl$resourceEndPoint/$treatmentId'),
+      Uri.parse('$apiUrl$resourceEndpoint/$treatmentId'),
       headers: {
         'Authorization': 'Bearer $token',
       },
@@ -100,7 +100,7 @@ class TreatmentService extends BaseService<TreatmentPlan> {
   Future<List<String>> getTasksByPatientId(int patientId, String token) async {
     print("on task service");
     final response = await http.get(
-      Uri.parse('$apiUrl$resourceEndPoint/patient/$patientId'),
+      Uri.parse('$apiUrl$resourceEndpoint/patient/$patientId'),
       headers: {
         'Authorization': 'Bearer $token',
       },
@@ -134,7 +134,7 @@ class TreatmentService extends BaseService<TreatmentPlan> {
 
   Future<void> addTasks(int treatmentId, Map<String, String> data, String token) async {
     final response = await http.put(
-      Uri.parse('$apiUrl$resourceEndPoint/$treatmentId/task'),
+      Uri.parse('$apiUrl$resourceEndpoint/$treatmentId/task'),
       headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $token',
@@ -151,7 +151,7 @@ class TreatmentService extends BaseService<TreatmentPlan> {
 
   Future<void> updateDiagnostic(int treatmentId, Map<String, String> data, String token) async {
     final response = await http.put(
-      Uri.parse('$apiUrl$resourceEndPoint/$treatmentId/diagnostic'),
+      Uri.parse('$apiUrl$resourceEndpoint/$treatmentId/diagnostic'),
       headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $token',

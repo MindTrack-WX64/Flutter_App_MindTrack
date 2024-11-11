@@ -4,13 +4,13 @@ import '../model/prescription.dart';
 import '../../shared/services/base_service.dart';
 
 class PrescriptionService extends BaseService<Prescription> {
-  PrescriptionService() : super(resourceEndPoint: '/prescriptions');
+  PrescriptionService() : super(resourceEndpoint: '/prescriptions');
 
 
 
   Future<http.Response> addPill(int prescriptionId, Map<String, dynamic> pillData, String token) async {
     final response = await http.put(
-      Uri.parse('$apiUrl$resourceEndPoint/$prescriptionId/pills'),
+      Uri.parse('$apiUrl$resourceEndpoint/$prescriptionId/pills'),
       headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $token',
@@ -26,7 +26,7 @@ class PrescriptionService extends BaseService<Prescription> {
 
   Future<http.Response> createPrescription(Map<String, dynamic> prescriptionData, String token) async {
     final response = await http.post(
-      Uri.parse('$apiUrl$resourceEndPoint'),
+      Uri.parse('$apiUrl$resourceEndpoint'),
       headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $token',
@@ -43,7 +43,7 @@ class PrescriptionService extends BaseService<Prescription> {
 
   Future<Map<String, dynamic>> findByPatientId(int patientId, String token) async {
     final response = await http.get(
-      Uri.parse('$apiUrl$resourceEndPoint?patientId=$patientId'),
+      Uri.parse('$apiUrl$resourceEndpoint?patientId=$patientId'),
       headers: {
         'Authorization': 'Bearer $token',
       },
@@ -63,7 +63,7 @@ class PrescriptionService extends BaseService<Prescription> {
   }
   Future<int> getPrescriptionIdByPatientId(int patientId, String token) async {
     final response = await http.get(
-      Uri.parse('$apiUrl$resourceEndPoint?patientId=$patientId'),
+      Uri.parse('$apiUrl$resourceEndpoint?patientId=$patientId'),
       headers: {
         'Authorization': 'Bearer $token',
       },

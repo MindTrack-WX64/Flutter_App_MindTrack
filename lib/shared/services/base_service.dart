@@ -11,9 +11,8 @@ class HttpException implements Exception {
 }
 
 abstract class BaseService<T> {
-  final String apiUrl = 'https://10.0.0.1:8080/api/v1';
+  final String apiUrl = 'http://10.0.2.2:8080/api/v1';
   final String resourceEndpoint;
-
   BaseService({required this.resourceEndpoint});
 
   /// Fetches a list of resources from the API endpoint.
@@ -29,7 +28,9 @@ abstract class BaseService<T> {
   Future<T> getById(String id, String token) async {
     final response = await http.get(
       Uri.parse('$apiUrl/$resourceEndpoint/$id'),
-      headers: token != null ? {'Authorization': 'Bearer $token'} : {},
+      headers: {
+        'Authorization': 'Bearer $token',
+      },
     );
     _handleResponse(response);
     return fromJson(json.decode(response.body));
@@ -37,32 +38,43 @@ abstract class BaseService<T> {
 
   /// Creates a new resource on the API endpoint.
   /// Requires an authorization token for protected resources.
-  Future<http.Response> create(T item, String token) async {
+  Future<T> create(T item, String token) async {
+    print(json.encode(toJson(item)));
+    print(resourceEndpoint);
     final response = await http.post(
       Uri.parse('$apiUrl/$resourceEndpoint'),
       headers: {
         'Content-Type': 'application/json',
-        if (token != null) 'Authorization': 'Bearer $token',
+        'Authorization': 'Bearer $token',
       },
       body: json.encode(toJson(item)),
     );
     _handleResponse(response);
-    return response;
+    return fromJson(json.decode(response.body));
   }
 
   /// Updates an existing resource on the API endpoint.
-  Future<void> update(String id, T item) async {
+  Future<T> update(String id, T item, String token) async {
     final response = await http.put(
       Uri.parse('$apiUrl/$resourceEndpoint/$id'),
-      headers: {'Content-Type': 'application/json'},
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
       body: json.encode(toJson(item)),
     );
     _handleResponse(response);
+    return fromJson(json.decode(response.body));
   }
 
   /// Deletes a resource from the API endpoint.
-  Future<void> delete(String id) async {
-    final response = await http.delete(Uri.parse('$apiUrl/$resourceEndpoint/$id'));
+  Future<void> delete(String id, String token) async {
+    final response = await http.delete(
+      Uri.parse('$apiUrl/$resourceEndpoint/$id'),
+      headers: {
+        'Authorization': 'Bearer $token',
+      },
+    );
     _handleResponse(response);
   }
 

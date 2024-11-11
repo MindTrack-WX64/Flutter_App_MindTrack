@@ -2,7 +2,7 @@ import 'base_service.dart';
 import '../model/professional_entity.dart';
 
 class ProfessionalService extends BaseService<Professional> {
-  ProfessionalService() : super({required resourceEndpoint: '/professionals'});
+  ProfessionalService() : super(resourceEndpoint: '/professionals');
 
   @override
   Professional fromJson(Map<String, dynamic> json) {

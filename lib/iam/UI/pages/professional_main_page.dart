@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:mind_track_flutter_app/iam/UI/pages/new_patient_page.dart';
 import 'package:mind_track_flutter_app/patient-management/UI/pages/patient-list.dart';
+import 'package:mind_track_flutter_app/session-management/UI/pages/session_view.dart';
+
 
 class ProfessionalMainPage extends StatelessWidget {
   final int professionalId;
@@ -71,7 +73,16 @@ class ProfessionalMainPage extends StatelessWidget {
             SizedBox(height: 20),
             ElevatedButton.icon(
               onPressed: () {
-                // Handle appointments button press
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => SessionView(
+                      patientId: 3,
+                      professionalId: professionalId,
+                      token: token,
+                    ),
+                  ),
+                );
               },
               icon: Icon(Icons.calendar_today, color: Colors.white),
               label: Text('Appointments'),

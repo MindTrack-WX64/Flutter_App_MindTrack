@@ -7,13 +7,13 @@ import '../model/clinical_history_entity.dart';
 
 
 class ClinicalHistoryService extends BaseService<ClinicalHistory> {
-  ClinicalHistoryService() : super(resourceEndPoint: '/clinicalHistories');
+  ClinicalHistoryService() : super(resourceEndpoint: '/clinicalHistories');
 
 
   Future<http.Response> createClinicalHistory(ClinicalHistory clinicalHistory, String token) async {
     final clinicalHistoryJson = json.encode(clinicalHistory.toJson());
     final response = await http.post(
-      Uri.parse('$apiUrl$resourceEndPoint'),
+      Uri.parse('$apiUrl$resourceEndpoint'),
       headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $token',
@@ -29,7 +29,7 @@ class ClinicalHistoryService extends BaseService<ClinicalHistory> {
 
   Future<ClinicalHistory> getByPatientId(int patientId, String token) async {
     final response = await http.get(
-      Uri.parse('$apiUrl$resourceEndPoint/patient/$patientId'),
+      Uri.parse('$apiUrl$resourceEndpoint/patient/$patientId'),
       headers: {
         'Authorization': 'Bearer $token',
       },

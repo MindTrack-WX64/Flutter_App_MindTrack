@@ -9,7 +9,7 @@ class SessionEntity {
     this.id,
     required this.patientId,
     required this.professionalId,
-    required this.sessionDate,
+    required this.sessionDate, // Recibe como DateTime
     this.treatmentPlanId,
   });
 
@@ -18,7 +18,7 @@ class SessionEntity {
       id: json['id'],
       patientId: json['patientId'],
       professionalId: json['professionalId'],
-      sessionDate: json['sessionDate'],
+      sessionDate: DateTime.parse(json['sessionDate']),
       treatmentPlanId: json['treatmentPlanId'],
     );
   }
@@ -28,7 +28,7 @@ class SessionEntity {
       'id': id,
       'patientId': patientId,
       'professionalId': professionalId,
-      'sessionDate': sessionDate,
+      'sessionDate': sessionDate.toIso8601String(),
       'treatmentPlanId': treatmentPlanId,
     };
   }

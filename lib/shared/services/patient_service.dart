@@ -4,12 +4,13 @@ import 'base_service.dart';
 import '../model/patient_entity.dart';
 
 class PatientService extends BaseService<Patient> {
-  PatientService() : super(resourceEndPoint: '/profiles/patients');
+
+  PatientService() : super(resourceEndpoint: '/profiles/patients');
 
 
   Future<Patient> getByPatientId(int patientId, String token) async {
     final response = await http.get(
-      Uri.parse('$apiUrl$resourceEndPoint/$patientId'),
+      Uri.parse('$apiUrl$resourceEndpoint/$patientId'),
       headers: {
         'Authorization': 'Bearer $token',
       },
@@ -32,7 +33,7 @@ class PatientService extends BaseService<Patient> {
   Future<List<Patient>> getPatientsByProfessionalId(int professionalId, String token ) async
   {
     final response = await http.get(
-      Uri.parse('$apiUrl$resourceEndPoint/$professionalId'),
+      Uri.parse('$apiUrl$resourceEndpoint/professional/$professionalId'),
       headers: {
         'Authorization': 'Bearer $token',
       },
