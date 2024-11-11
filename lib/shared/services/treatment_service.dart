@@ -1,7 +1,9 @@
-import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'base_service.dart';
+
+import 'package:http/http.dart' as http;
+
 import '../model/tratment_plan.dart';
+import 'base_service.dart';
 
 class TreatmentService extends BaseService<TreatmentPlan> {
   TreatmentService() : super(resourceEndpoint: '/treatment-plans');

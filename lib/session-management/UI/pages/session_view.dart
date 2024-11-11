@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:mind_track_flutter_app/session-management/services/session_service.dart';
-import 'package:mind_track_flutter_app/session-management/model/session_entity.dart';
 import 'package:intl/intl.dart'; // Para formatear la fecha
+import 'package:mind_track_flutter_app/session-management/model/session_entity.dart';
+import 'package:mind_track_flutter_app/session-management/services/session_service.dart';
 
 class SessionView extends StatefulWidget {
   final int patientId;
