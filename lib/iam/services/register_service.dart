@@ -1,5 +1,7 @@
-import 'package:http/http.dart' as http;
 import 'dart:convert';
+
+import 'package:http/http.dart' as http;
+
 import '../../shared/model/professional_entity.dart';
 import '../../shared/services/base_service.dart';
 

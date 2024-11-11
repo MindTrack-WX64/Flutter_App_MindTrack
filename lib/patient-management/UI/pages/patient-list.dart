@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:mind_track_flutter_app/shared/services/treatment_service.dart';
-import 'package:mind_track_flutter_app/shared/services/patient_service.dart';
 import 'package:mind_track_flutter_app/clinical-history/UI/pages/clinical_professional_view.dart';
 import 'package:mind_track_flutter_app/diagnostic/UI/pages/diagnosticView.dart';
-import 'package:mind_track_flutter_app/shared/model/patient_entity.dart';
 import 'package:mind_track_flutter_app/prescription-management/UI/pages/prescription_view.dart';
 import 'package:mind_track_flutter_app/session-management/UI/pages/session_view.dart';
+import 'package:mind_track_flutter_app/shared/model/patient_entity.dart';
+import 'package:mind_track_flutter_app/shared/services/patient_service.dart';
+import 'package:mind_track_flutter_app/shared/services/treatment_service.dart';
 import 'package:mind_track_flutter_app/task-management/UI/pages/task_view.dart';
 
 class ProfessionalPatientsPage extends StatefulWidget {

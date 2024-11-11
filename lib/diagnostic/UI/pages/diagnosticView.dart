@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:mind_track_flutter_app/shared/services/treatment_service.dart';
 import 'package:mind_track_flutter_app/diagnostic/UI/pages/diagnostic_edit_view.dart';
+import 'package:mind_track_flutter_app/shared/services/treatment_service.dart';
 
 class DiagnosticView extends StatefulWidget {
   final String token;

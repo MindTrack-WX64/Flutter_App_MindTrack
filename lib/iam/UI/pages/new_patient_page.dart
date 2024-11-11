@@ -1,12 +1,13 @@
 import 'dart:convert';
-import "package:mind_track_flutter_app/clinical-history/services/clinical_history_service.dart";
+
 import 'package:flutter/material.dart';
-import 'package:mind_track_flutter_app/shared/model/patient_entity.dart';
-import 'package:mind_track_flutter_app/iam/services/new_patient_service.dart';
 import 'package:mind_track_flutter_app/clinical-history/model/clinical_history_entity.dart';
+import "package:mind_track_flutter_app/clinical-history/services/clinical_history_service.dart";
+import 'package:mind_track_flutter_app/iam/services/new_patient_service.dart';
+import "package:mind_track_flutter_app/prescription-management/service/prescription_service.dart";
+import 'package:mind_track_flutter_app/shared/model/patient_entity.dart';
 import 'package:mind_track_flutter_app/shared/model/tratment_plan.dart';
 import 'package:mind_track_flutter_app/shared/services/treatment_service.dart';
-import "package:mind_track_flutter_app/prescription-management/service/prescription_service.dart";
 
 class NewPatientPage extends StatefulWidget {
   final String token;

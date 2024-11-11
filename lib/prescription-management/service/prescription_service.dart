@@ -1,7 +1,9 @@
-import 'package:http/http.dart' as http;
 import 'dart:convert';
-import '../model/prescription.dart';
+
+import 'package:http/http.dart' as http;
+
 import '../../shared/services/base_service.dart';
+import '../model/prescription.dart';
 
 class PrescriptionService extends BaseService<Prescription> {
   PrescriptionService() : super(resourceEndpoint: '/prescriptions');

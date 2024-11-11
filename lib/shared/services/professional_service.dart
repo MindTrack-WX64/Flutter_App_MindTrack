@@ -1,5 +1,5 @@
-import 'base_service.dart';
 import '../model/professional_entity.dart';
+import 'base_service.dart';
 
 class ProfessionalService extends BaseService<Professional> {
   ProfessionalService() : super(resourceEndpoint: '/professionals');
