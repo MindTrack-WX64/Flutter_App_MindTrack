@@ -32,62 +32,16 @@ class _NewPatientPageState extends State<NewPatientPage> {
 
   void _createPatient() async {
     if (_formKey.currentState!.validate()) {
-      final newPatient = Patient(
-        patientId: 0,
-        username: _usernameController.text,
-        password: _passwordController.text,
-        fullName: _fullNameController.text,
-        email: _emailController.text,
-        phone: _phoneController.text,
-        birthDate: DateTime.parse(_birthDateController.text),
-      );
-
-      final newPatientService = NewPatientService();
-      final clinicalHistoryService = ClinicalHistoryService();
-      final treatmentService = TreatmentService();
-      final prescriptionService = PrescriptionService();
-
       try {
-        print(newPatient.toJson());
-        print(widget.token);
-        final response = await newPatientService.createPatient(newPatient, widget.token);
-        final responseData = json.decode(response.body);
-        final patientId = responseData['id'];
+        final patientId = await _createNewPatient();
+        await _createClinicalHistory(patientId);
+        await _createTreatmentPlan(patientId);
+        await _createPrescription(patientId);
+
+        Navigator.pop(context);
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Patient created successfully with ID: $patientId')),
         );
-
-        final newClinicalHistory = ClinicalHistory(
-          patientId: patientId,
-          background: _backgroundController.text,
-          consultationReason: _consultationReasonController.text,
-          consultationDate: DateTime.now().toIso8601String(),
-        );
-
-        print("in clinical service");
-        print(newClinicalHistory.toJson());
-        await clinicalHistoryService.createClinicalHistory(newClinicalHistory, widget.token);
-
-        final newTreatmentPlan = TreatmentPlan.basic(
-          patientId: patientId,
-          professionalId: widget.professionalId,
-          description: " ",
-        );
-        print("in treatment service");
-        print(newTreatmentPlan.toJson());
-
-        await treatmentService.createTreatmentPlan(newTreatmentPlan, widget.token);
-
-        final prescriptionData = {
-          "patientId": patientId,
-          "professionalId": widget.professionalId,
-          "startDate": DateTime.now().toIso8601String(),
-          "endDate": DateTime.now().toIso8601String(),
-        };
-
-        await prescriptionService.createPrescription(prescriptionData, widget.token);
-
-        Navigator.pop(context);
       } catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Failed to create patient: $e')),
@@ -95,6 +49,60 @@ class _NewPatientPageState extends State<NewPatientPage> {
       }
     }
   }
+
+  Future<int> _createNewPatient() async {
+    final newPatient = Patient(
+      patientId: 0,
+      username: _usernameController.text,
+      password: _passwordController.text,
+      fullName: _fullNameController.text,
+      email: _emailController.text,
+      phone: _phoneController.text,
+      birthDate: DateTime.parse(_birthDateController.text),
+      professionalId: widget.professionalId,
+    );
+
+    final newPatientService = NewPatientService();
+    final response = await newPatientService.createPatient(newPatient, widget.token);
+    final responseData = json.decode(response.body);
+    return responseData['id'];
+  }
+
+  Future<void> _createClinicalHistory(int patientId) async {
+    final newClinicalHistory = ClinicalHistory(
+      patientId: patientId,
+      background: _backgroundController.text,
+      consultationReason: _consultationReasonController.text,
+      consultationDate: DateTime.now().toIso8601String(),
+    );
+
+    final clinicalHistoryService = ClinicalHistoryService();
+    await clinicalHistoryService.createClinicalHistory(newClinicalHistory, widget.token);
+  }
+
+  Future<void> _createTreatmentPlan(int patientId) async {
+    final newTreatmentPlan = TreatmentPlan.basic(
+      patientId: patientId,
+      professionalId: widget.professionalId,
+      description: " ",
+    );
+
+    final treatmentService = TreatmentService();
+    await treatmentService.createTreatmentPlan(newTreatmentPlan, widget.token);
+  }
+
+  Future<void> _createPrescription(int patientId) async {
+    final prescriptionData = {
+      "patientId": patientId,
+      "professionalId": widget.professionalId,
+      "startDate": DateTime.now().toIso8601String(),
+      "endDate": DateTime.now().toIso8601String(),
+    };
+
+    final prescriptionService = PrescriptionService();
+    await prescriptionService.createPrescription(prescriptionData, widget.token);
+  }
+
 
   @override
   Widget build(BuildContext context) {

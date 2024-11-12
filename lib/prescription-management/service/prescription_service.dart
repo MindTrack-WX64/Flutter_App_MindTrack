@@ -42,6 +42,38 @@ class PrescriptionService extends BaseService<Prescription> {
     return response;
   }
 
+  Future<http.Response> createPrescriptionOfTreatmentPlan(int treatmentId, Map<String, dynamic> prescriptionData, String token) async {
+    final response = await http.post(
+      Uri.parse('$apiUrl$resourceEndpoint/$treatmentId'),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+      body: json.encode(prescriptionData),
+    );
+
+    if (response.statusCode != 201) {
+      throw Exception('Failed to create prescription');
+    }
+    return response;
+  }
+
+  Future<Prescription> getPrescriptionById(int prescriptionId, String token) async {
+    final response = await http.get(
+      Uri.parse('$apiUrl$resourceEndpoint/$prescriptionId'),
+      headers: {
+        'Authorization': 'Bearer $token',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      final prescription = json.decode(response.body);
+      return Prescription.fromJson(prescription);
+    } else {
+      throw Exception('Failed to load prescription');
+    }
+  }
+
 
   Future<Map<String, dynamic>> findByPatientId(int patientId, String token) async {
     final response = await http.get(
@@ -63,7 +95,8 @@ class PrescriptionService extends BaseService<Prescription> {
       throw Exception('Failed to load prescriptions');
     }
   }
-  Future<int> getPrescriptionIdByPatientId(int patientId, String token) async {
+
+  Future<List<Prescription>> getPrescriptionsByPatientId(int patientId, String token) async {
     final response = await http.get(
       Uri.parse('$apiUrl$resourceEndpoint?patientId=$patientId'),
       headers: {
@@ -72,12 +105,40 @@ class PrescriptionService extends BaseService<Prescription> {
     );
 
     if (response.statusCode == 200) {
-      final List<dynamic> prescriptions = json.decode(response.body);
-      if (prescriptions.isNotEmpty) {
-        return prescriptions.first['id'];
-      } else {
-        throw Exception('No prescriptions found for patient');
-      }
+      final prescriptions = json.decode(response.body);
+      return prescriptions.map<Prescription>((json) => Prescription.fromJson(json)).toList();
+    } else {
+      throw Exception('Failed to load prescriptions');
+    }
+  }
+
+  Future<List<Prescription>> getPrescriptionsByProfessionalId(int professionalId, String token) async {
+    final response = await http.get(
+      Uri.parse('$apiUrl$resourceEndpoint/professional/$professionalId'),
+      headers: {
+        'Authorization': 'Bearer $token',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      final prescriptions = json.decode(response.body);
+      return prescriptions.map<Prescription>((json) => Prescription.fromJson(json)).toList();
+    } else {
+      throw Exception('Failed to load prescriptions');
+    }
+  }
+
+  Future<List<Prescription>> getPrescriptionsByTreatmentPlanId(int treatmentId, String token) async {
+    final response = await http.get(
+      Uri.parse('$apiUrl$resourceEndpoint/treatment/$treatmentId'),
+      headers: {
+        'Authorization': 'Bearer $token',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      final prescriptions = json.decode(response.body);
+      return prescriptions.map<Prescription>((json) => Prescription.fromJson(json)).toList();
     } else {
       throw Exception('Failed to load prescriptions');
     }

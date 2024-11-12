@@ -9,7 +9,6 @@ class PatientService extends BaseService<Patient> {
 
   PatientService() : super(resourceEndpoint: '/profiles/patients');
 
-
   Future<Patient> getByPatientId(int patientId, String token) async {
     final response = await http.get(
       Uri.parse('$apiUrl$resourceEndpoint/$patientId'),
@@ -35,7 +34,7 @@ class PatientService extends BaseService<Patient> {
   Future<List<Patient>> getPatientsByProfessionalId(int professionalId, String token ) async
   {
     final response = await http.get(
-      Uri.parse('$apiUrl$resourceEndpoint/professional/$professionalId'),
+      Uri.parse('$apiUrl/profiles/professionals/$professionalId/patients'),
       headers: {
         'Authorization': 'Bearer $token',
       },
