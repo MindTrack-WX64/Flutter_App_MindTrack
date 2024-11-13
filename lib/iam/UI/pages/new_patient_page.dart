@@ -4,10 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:mind_track_flutter_app/clinical-history/model/clinical_history_entity.dart';
 import "package:mind_track_flutter_app/clinical-history/services/clinical_history_service.dart";
 import 'package:mind_track_flutter_app/iam/services/new_patient_service.dart';
-import "package:mind_track_flutter_app/prescription-management/service/prescription_service.dart";
 import 'package:mind_track_flutter_app/shared/model/patient_entity.dart';
-import 'package:mind_track_flutter_app/shared/model/tratment_plan.dart';
-import 'package:mind_track_flutter_app/shared/services/treatment_service.dart';
 
 class NewPatientPage extends StatefulWidget {
   final String token;
@@ -35,8 +32,6 @@ class _NewPatientPageState extends State<NewPatientPage> {
       try {
         final patientId = await _createNewPatient();
         await _createClinicalHistory(patientId);
-        await _createTreatmentPlan(patientId);
-        await _createPrescription(patientId);
 
         Navigator.pop(context);
         ScaffoldMessenger.of(context).showSnackBar(
@@ -78,29 +73,6 @@ class _NewPatientPageState extends State<NewPatientPage> {
 
     final clinicalHistoryService = ClinicalHistoryService();
     await clinicalHistoryService.createClinicalHistory(newClinicalHistory, widget.token);
-  }
-
-  Future<void> _createTreatmentPlan(int patientId) async {
-    final newTreatmentPlan = TreatmentPlan.basic(
-      patientId: patientId,
-      professionalId: widget.professionalId,
-      description: " ",
-    );
-
-    final treatmentService = TreatmentService();
-    await treatmentService.createTreatmentPlan(newTreatmentPlan, widget.token);
-  }
-
-  Future<void> _createPrescription(int patientId) async {
-    final prescriptionData = {
-      "patientId": patientId,
-      "professionalId": widget.professionalId,
-      "startDate": DateTime.now().toIso8601String(),
-      "endDate": DateTime.now().toIso8601String(),
-    };
-
-    final prescriptionService = PrescriptionService();
-    await prescriptionService.createPrescription(prescriptionData, widget.token);
   }
 
 

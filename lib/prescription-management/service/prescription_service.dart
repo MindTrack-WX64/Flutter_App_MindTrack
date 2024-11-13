@@ -10,7 +10,10 @@ class PrescriptionService extends BaseService<Prescription> {
 
 
 
-  Future<http.Response> addPill(int prescriptionId, Map<String, dynamic> pillData, String token) async {
+  Future<http.Response> addPill(int prescriptionId, Pill pillData, String token) async {
+    print(pillData);
+
+    // Enviar la solicitud PUT al backend con los datos ya procesados
     final response = await http.put(
       Uri.parse('$apiUrl$resourceEndpoint/$prescriptionId/pills'),
       headers: {
@@ -20,11 +23,14 @@ class PrescriptionService extends BaseService<Prescription> {
       body: json.encode(pillData),
     );
 
-    if (response.statusCode != 201) {
+    // Comprobar el código de estado de la respuesta
+    if (response.statusCode != 200) {
       throw Exception('Failed to add pill');
     }
+
     return response;
   }
+
 
   Future<http.Response> createPrescription(Map<String, dynamic> prescriptionData, String token) async {
     final response = await http.post(

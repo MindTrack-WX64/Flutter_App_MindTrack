@@ -9,25 +9,37 @@ class PatientService extends BaseService<Patient> {
 
   PatientService() : super(resourceEndpoint: '/profiles/patients');
 
-  Future<Patient> getByPatientId(int patientId, String token) async {
+  Future<Patient> getByPatientId(int userId, String token) async {
     final response = await http.get(
-      Uri.parse('$apiUrl$resourceEndpoint/$patientId'),
+      Uri.parse('$apiUrl$resourceEndpoint/$userId'),
       headers: {
         'Authorization': 'Bearer $token',
       },
     );
 
-    print("in patient service");
-
     if (response.statusCode == 200) {
-      print("in patient service2");
       final responseBody = response.body;
       final json = jsonDecode(responseBody);
-      print("in patient service3");
-      print("Patient JSON: $json");
       return Patient.fromJson(json);
     } else {
       throw Exception('Failed to load patient');
+    }
+  }
+
+  Future<String> getPatientNameById(int userId, String token) async {
+    final response = await http.get(
+      Uri.parse('$apiUrl$resourceEndpoint/$userId'),
+      headers: {
+        'Authorization': 'Bearer $token',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+      print(data['fullName']);
+      return data['fullName'];
+    } else {
+      throw Exception('Failed to load patient name');
     }
   }
 

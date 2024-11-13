@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mind_track_flutter_app/clinical-history/UI/pages/clinical_professional_view.dart';
 import 'package:mind_track_flutter_app/diagnostic/UI/pages/diagnosticView.dart';
+import 'package:mind_track_flutter_app/iam/UI/pages/new_patient_page.dart';
 import 'package:mind_track_flutter_app/prescription-management/UI/pages/prescription_view.dart';
 import 'package:mind_track_flutter_app/session-management/UI/pages/session_view.dart';
 import 'package:mind_track_flutter_app/shared/model/patient_entity.dart';
@@ -28,16 +29,8 @@ class _ProfessionalPatientsPageState extends State<ProfessionalPatientsPage> {
   }
 
   Future<List<Patient>> _fetchPatients() async {
-    final treatmentService = TreatmentService();
     final patientService = PatientService();
-    final treatments = await treatmentService.getByProfessionalId(widget.professionalId, widget.token);
-    final patientIds = treatments.map((treatment) => treatment.patientId).toSet();
-
-    List<Patient> patients = [];
-    for (int patientId in patientIds) {
-      final patient = await patientService.getByPatientId(patientId, widget.token);
-      patients.add(patient);
-    }
+    final patients = await patientService.getPatientsByProfessionalId(widget.professionalId, widget.token);
     return patients;
   }
 
@@ -136,8 +129,8 @@ class _ProfessionalPatientsPageState extends State<ProfessionalPatientsPage> {
                             ),
                             ElevatedButton(
                               onPressed: () {
-                                Navigator.push(
-                                  context,
+                               /* Navigator.push(
+                                    context,
                                   MaterialPageRoute(
                                     builder: (context) => PrescriptionView(
                                       patientId: patient.patientId,
@@ -145,11 +138,10 @@ class _ProfessionalPatientsPageState extends State<ProfessionalPatientsPage> {
                                       token: widget.token,
                                     ),
                                   ),
-                                );
+                                );*/
                               },
                               child: Text('Prescription'),
                             ),
-                          //  ElevatedButton(onPressed: () {}, child: Text('Patient Status')),
                             ElevatedButton(
                               onPressed: () {
                                 Navigator.push(
@@ -189,6 +181,21 @@ class _ProfessionalPatientsPageState extends State<ProfessionalPatientsPage> {
             );
           }
         },
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => NewPatientPage(
+                professionalId: widget.professionalId,
+                token: widget.token,
+              ),
+            ),
+          );
+        }, // Navegar a la página de agregar paciente
+        backgroundColor: Colors.blue,
+        child: Icon(Icons.add, color: Colors.white),
       ),
     );
   }
