@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mind_track_flutter_app/iam/UI/pages/new_patient_page.dart';
 import 'package:mind_track_flutter_app/patient-management/UI/pages/patient-list.dart';
-import 'package:mind_track_flutter_app/prescription-management/UI/pages/prescription_form.dart';
 import 'package:mind_track_flutter_app/prescription-management/UI/pages/prescription_view.dart';
 import 'package:mind_track_flutter_app/session-management/UI/pages/session_view.dart';
 
