@@ -130,16 +130,15 @@ class _ProfessionalPatientsPageState extends State<ProfessionalPatientsPage> {
                             ),
                             ElevatedButton(
                               onPressed: () {
-                               /* Navigator.push(
+                               Navigator.push(
                                     context,
                                   MaterialPageRoute(
                                     builder: (context) => PrescriptionView(
-                                      patientId: patient.patientId,
                                       professionalId: widget.professionalId,
                                       token: widget.token,
                                     ),
                                   ),
-                                );*/
+                                );
                               },
                               child: Text('Prescription'),
                             ),

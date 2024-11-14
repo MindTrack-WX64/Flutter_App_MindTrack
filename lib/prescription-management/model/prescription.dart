@@ -15,6 +15,15 @@ class Prescription {
     required this.pills,
   });
 
+  Prescription.basic({
+    required this.patientId,
+    required this.professionalId,
+    required this.startDate,
+    required this.endDate,
+  }):
+    prescriptionId = 0,
+    pills = [];
+
   factory Prescription.fromJson(Map<String, dynamic> json) {
     return Prescription(
       prescriptionId: json['prescriptionId'],

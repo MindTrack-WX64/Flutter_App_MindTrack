@@ -7,6 +7,8 @@ import 'package:mind_track_flutter_app/iam/services/new_patient_service.dart';
 import 'package:mind_track_flutter_app/shared/model/patient_entity.dart';
 import "package:mind_track_flutter_app/shared/services/treatment_service.dart";
 import 'package:mind_track_flutter_app/shared/model/tratment_plan.dart';
+import 'package:mind_track_flutter_app/prescription-management/service/prescription_service.dart';
+import 'package:mind_track_flutter_app/prescription-management/model/prescription.dart';
 
 class NewPatientPage extends StatefulWidget {
   final String token;
@@ -35,6 +37,9 @@ class _NewPatientPageState extends State<NewPatientPage> {
         final patientId = await _createNewPatient();
         await _createClinicalHistory(patientId);
         await _createTreatment(patientId);
+        await _createPrescription(patientId);
+
+
         Navigator.pop(context);
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Patient created successfully with ID: $patientId')),
@@ -89,6 +94,21 @@ class _NewPatientPageState extends State<NewPatientPage> {
     await treatmentService.createTreatmentPlan(treatment, widget.token);
   }
 
+
+  Future<void> _createPrescription(int patientId) async{
+    final newPrescription = Prescription.basic(
+      patientId: patientId,
+      professionalId: widget.professionalId,
+      startDate: DateTime.now(),
+      endDate: DateTime.now().add(Duration(days: 30)),
+    );
+
+    Map<String,dynamic> json = newPrescription.toJson();
+
+    final prescriptionService = PrescriptionService();
+    await prescriptionService.createPrescription(json, widget.token);
+
+  }
 
 
 

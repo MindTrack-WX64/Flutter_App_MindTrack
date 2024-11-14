@@ -86,9 +86,8 @@ class TreatmentService extends BaseService<TreatmentPlan> {
 
   Future<List<String>> getDiagnosticsByTreatmentId(int treatmentId, String token) async {
 
-    print('$apiUrl/prescriptions/treatment/$treatmentId');
     final response = await http.get(
-      Uri.parse('$apiUrl/prescriptions/treatment/$treatmentId'),
+      Uri.parse('$apiUrl$resourceEndpoint/$treatmentId'),
       headers: {
         'Authorization': 'Bearer $token',
       },

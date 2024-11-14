@@ -37,7 +37,7 @@ class _DiagnosticEditViewState extends State<DiagnosticEditView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Edit Diagnostic'),
+        title: Text('New Diagnostic'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
