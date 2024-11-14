@@ -5,6 +5,8 @@ import 'package:mind_track_flutter_app/clinical-history/model/clinical_history_e
 import "package:mind_track_flutter_app/clinical-history/services/clinical_history_service.dart";
 import 'package:mind_track_flutter_app/iam/services/new_patient_service.dart';
 import 'package:mind_track_flutter_app/shared/model/patient_entity.dart';
+import "package:mind_track_flutter_app/shared/services/treatment_service.dart";
+import 'package:mind_track_flutter_app/shared/model/tratment_plan.dart';
 
 class NewPatientPage extends StatefulWidget {
   final String token;
@@ -32,7 +34,7 @@ class _NewPatientPageState extends State<NewPatientPage> {
       try {
         final patientId = await _createNewPatient();
         await _createClinicalHistory(patientId);
-
+        await _createTreatment(patientId);
         Navigator.pop(context);
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Patient created successfully with ID: $patientId')),
@@ -74,6 +76,20 @@ class _NewPatientPageState extends State<NewPatientPage> {
     final clinicalHistoryService = ClinicalHistoryService();
     await clinicalHistoryService.createClinicalHistory(newClinicalHistory, widget.token);
   }
+
+
+  Future<void> _createTreatment(int patientId) async {
+    final  treatment = TreatmentPlan.basic(
+      patientId: patientId,
+      professionalId: widget.professionalId,
+      description: "Treatment for patient",
+    );
+
+    final treatmentService = TreatmentService();
+    await treatmentService.createTreatmentPlan(treatment, widget.token);
+  }
+
+
 
 
   @override

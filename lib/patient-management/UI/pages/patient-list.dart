@@ -45,6 +45,7 @@ class _ProfessionalPatientsPageState extends State<ProfessionalPatientsPage> {
   }
 
   Future<void> _navigateToDiagnostics(BuildContext context, int patientId) async {
+    print(patientId);
     final treatmentService = TreatmentService();
 
     try {

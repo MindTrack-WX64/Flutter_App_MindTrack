@@ -39,6 +39,7 @@ class TreatmentService extends BaseService<TreatmentPlan> {
   }
 
   Future<int> getTreatmentPlanIdByPatientId(int patientId, String token) async {
+    print('$apiUrl$resourceEndpoint/patient/$patientId');
     final response = await http.get(
       Uri.parse('$apiUrl$resourceEndpoint/patient/$patientId'),
       headers: {
@@ -84,12 +85,15 @@ class TreatmentService extends BaseService<TreatmentPlan> {
   }
 
   Future<List<String>> getDiagnosticsByTreatmentId(int treatmentId, String token) async {
+
+    print('$apiUrl/prescriptions/treatment/$treatmentId');
     final response = await http.get(
-      Uri.parse('$apiUrl$resourceEndpoint/$treatmentId'),
+      Uri.parse('$apiUrl/prescriptions/treatment/$treatmentId'),
       headers: {
         'Authorization': 'Bearer $token',
       },
     );
+    print("on diagnosis service");
 
     if (response.statusCode == 200) {
       final treatmentPlan = json.decode(response.body);

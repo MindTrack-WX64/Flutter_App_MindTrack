@@ -42,6 +42,7 @@ class _DiagnosticViewState extends State<DiagnosticView> with RouteAware {
   }
 
   void _fetchDiagnostics() {
+    print(widget.treatmentId);
     setState(() {
       _diagnosticsFuture = TreatmentService().getDiagnosticsByTreatmentId(widget.treatmentId, widget.token);
     });
