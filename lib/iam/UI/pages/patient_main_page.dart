@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mind_track_flutter_app/session-management/UI/pages/session_view.dart';
 
 class PatientMainPage extends StatelessWidget {
   final int patientId;
@@ -36,8 +37,15 @@ class PatientMainPage extends StatelessWidget {
             ),
             SizedBox(height: 20),
             ElevatedButton(
-              onPressed: () {
-                // Handle appointments button press
+              onPressed: ( ) {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => SessionView(patientId: patientId, professionalId: 1, token: token),
+                  ),
+                );
+
+
               },
               child: Text('Appointments'),
               style: ElevatedButton.styleFrom(

@@ -1,69 +1,96 @@
-import 'package:http/http.dart' as http;
 import 'dart:convert';
 
+import 'package:http/http.dart' as http;
+
+class HttpException implements Exception {
+  final String message;
+
+  HttpException(this.message);
+
+  @override
+  String toString() => message;
+}
+
 abstract class BaseService<T> {
-  final String apiUrl = 'https://mindtrackbackend-dgh8e0bxhucbhebg.canadacentral-01.azurewebsites.net/api/v1';
-  String resourceEndPoint;
+  final String apiUrl = 'http://10.0.2.2:8080/api/v1';
+  final String resourceEndpoint;
+  BaseService({required this.resourceEndpoint});
 
-  BaseService({this.resourceEndPoint = 'default-endpoint'});
-
+  /// Fetches a list of resources from the API endpoint.
   Future<List<T>> getAll() async {
-    final response = await http.get(Uri.parse('$apiUrl$resourceEndPoint'));
-    if (response.statusCode == 200) {
-      Iterable list = json.decode(response.body);
-      return list.map((model) => fromJson(model)).toList();
-    } else {
-      throw Exception('Failed to load data');
-    }
+    final response = await http.get(Uri.parse('$apiUrl/$resourceEndpoint'));
+    _handleResponse(response);
+    final data = json.decode(response.body) as List<dynamic>;
+    return data.map((model) => fromJson(model)).toList();
   }
 
+  /// Fetches a specific resource by ID from the API endpoint.
+  /// Requires an authorization token for protected resources.
   Future<T> getById(String id, String token) async {
     final response = await http.get(
-      Uri.parse('$apiUrl/$resourceEndPoint/$id'),
+      Uri.parse('$apiUrl/$resourceEndpoint/$id'),
       headers: {
         'Authorization': 'Bearer $token',
       },
     );
-    if (response.statusCode == 200) {
-      return fromJson(json.decode(response.body));
-    } else {
-      throw Exception('Failed to load data');
-    }
+    _handleResponse(response);
+    return fromJson(json.decode(response.body));
   }
 
-  Future<http.Response> create(T item, String token) async {
+  /// Creates a new resource on the API endpoint.
+  /// Requires an authorization token for protected resources.
+  Future<T> create(T item, String token) async {
+    print(json.encode(toJson(item)));
+    print(resourceEndpoint);
     final response = await http.post(
-      Uri.parse('$apiUrl/$resourceEndPoint'),
+      Uri.parse('$apiUrl/$resourceEndpoint'),
       headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $token',
       },
       body: json.encode(toJson(item)),
     );
-    if (response.statusCode != 201) {
-      throw Exception('Failed to create item');
-    }
-    return response;
+    _handleResponse(response);
+    return fromJson(json.decode(response.body));
   }
 
-  Future<void> update(String id, T item) async {
+  /// Updates an existing resource on the API endpoint.
+  Future<T> update(String id, T item, String token) async {
     final response = await http.put(
-      Uri.parse('$apiUrl/$resourceEndPoint/$id'),
-      headers: {'Content-Type': 'application/json'},
+      Uri.parse('$apiUrl/$resourceEndpoint/$id'),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
       body: json.encode(toJson(item)),
     );
-    if (response.statusCode != 200) {
-      throw Exception('Failed to update item');
+    _handleResponse(response);
+    return fromJson(json.decode(response.body));
+  }
+
+  /// Deletes a resource from the API endpoint.
+  Future<void> delete(String id, String token) async {
+    final response = await http.delete(
+      Uri.parse('$apiUrl/$resourceEndpoint/$id'),
+      headers: {
+        'Authorization': 'Bearer $token',
+      },
+    );
+    _handleResponse(response);
+  }
+
+  /// Handles HTTP responses, throwing an `HttpException` for errors.
+  void _handleResponse(http.Response response) {
+    if (response.statusCode >= 400) {
+      throw HttpException('${response.statusCode} - ${response.reasonPhrase}');
     }
   }
 
-  Future<void> delete(String id) async {
-    final response = await http.delete(Uri.parse('$apiUrl/$resourceEndPoint/$id'));
-    if (response.statusCode != 200) {
-      throw Exception('Failed to delete item');
-    }
-  }
-
+  /// Abstract method to convert a JSON object to a specific type T.
+  /// This needs to be implemented by the concrete service class.
   T fromJson(Map<String, dynamic> json);
+
+  /// Abstract method to convert a specific type T to a JSON object.
+  /// This needs to be implemented by the concrete service class.
   Map<String, dynamic> toJson(T item);
 }

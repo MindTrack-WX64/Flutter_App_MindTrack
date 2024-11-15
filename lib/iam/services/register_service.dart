@@ -1,15 +1,17 @@
-import 'package:http/http.dart' as http;
 import 'dart:convert';
+
+import 'package:http/http.dart' as http;
+
 import '../../shared/model/professional_entity.dart';
 import '../../shared/services/base_service.dart';
 
 class RegisterService extends BaseService<Professional> {
-  RegisterService() : super(resourceEndPoint: '/authentication/sign-up/professional');
+  RegisterService() : super(resourceEndpoint: '/authentication/sign-up/professional');
 
   Future<void> register(Professional professional) async {
     final userJson = json.encode(professional.toJson());
     final response = await http.post(
-      Uri.parse('$apiUrl$resourceEndPoint'),
+      Uri.parse('$apiUrl$resourceEndpoint'),
       headers: {'Content-Type': 'application/json'},
       body: userJson,
     );

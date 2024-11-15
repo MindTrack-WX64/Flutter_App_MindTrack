@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:mind_track_flutter_app/clinical-history/services/clinical_history_service.dart';
 import 'package:mind_track_flutter_app/clinical-history/model/clinical_history_entity.dart';
+import 'package:mind_track_flutter_app/clinical-history/services/clinical_history_service.dart';
 
 class ClinicalHistoryPage extends StatefulWidget {
   final int patientId;

@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import '../../services/register_service.dart';
 import 'package:mind_track_flutter_app/shared/model/professional_entity.dart';
+
+import '../../services/register_service.dart';
 
 class RegisterPage extends StatefulWidget {
   @override

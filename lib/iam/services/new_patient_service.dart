@@ -1,15 +1,17 @@
-import 'package:http/http.dart' as http;
 import 'dart:convert';
+
+import 'package:http/http.dart' as http;
+
 import '../../shared/model/patient_entity.dart';
 import '../../shared/services/base_service.dart';
 
 class NewPatientService extends BaseService<Patient> {
-  NewPatientService() : super(resourceEndPoint: '/authentication/sign-up/patient');
+  NewPatientService() : super(resourceEndpoint: '/authentication/sign-up/patient');
 
   Future<http.Response> createPatient(Patient patient, String token) async {
     final patientJson = json.encode(patient.toJson());
     final response = await http.post(
-      Uri.parse('$apiUrl$resourceEndPoint'),
+      Uri.parse('$apiUrl$resourceEndpoint'),
       headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $token',
