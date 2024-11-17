@@ -87,22 +87,82 @@ class _TasksPageState extends State<TasksPage> {
         future: _tasksFuture,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  CircularProgressIndicator(),
+                  SizedBox(height: 16),
+                  Text(
+                    'Loading tasks...',
+                    style: TextStyle(fontSize: 16, color: Colors.grey),
+                  ),
+                ],
+              ),
+            );
           } else if (snapshot.hasError) {
-            return Center(child: Text('Error: ${snapshot.error}'));
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(Icons.error_outline, color: Colors.red, size: 48),
+                  SizedBox(height: 8),
+                  Text(
+                    'Error: ${snapshot.error}',
+                    style: TextStyle(fontSize: 16, color: Colors.red),
+                    textAlign: TextAlign.center,
+                  ),
+                ],
+              ),
+            );
           } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return Center(child: Text('No tasks found'));
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(Icons.task_alt, color: Colors.grey, size: 48),
+                  SizedBox(height: 8),
+                  Text(
+                    'No tasks found',
+                    style: TextStyle(fontSize: 18, color: Colors.grey),
+                  ),
+                ],
+              ),
+            );
           } else {
             final tasks = snapshot.data!;
             return ListView.builder(
+              padding: EdgeInsets.all(8),
               itemCount: tasks.length,
               itemBuilder: (context, index) {
                 final task = tasks[index];
                 final title = task.split(' - ')[0].split(': ')[1];
                 final description = task.split(' - ')[1].split(': ')[1];
-                return ListTile(
-                  title: Text(title),
-                  subtitle: Text(description),
+                return Card(
+                  elevation: 4,
+                  margin: EdgeInsets.symmetric(vertical: 8),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: ListTile(
+                    contentPadding: EdgeInsets.all(16),
+                    title: Text(
+                      title,
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.blueAccent,
+                      ),
+                    ),
+                    subtitle: Text(
+                      description,
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: Colors.grey[700],
+                      ),
+                    ),
+                    leading: Icon(Icons.check_circle, color: Colors.greenAccent),
+                  ),
                 );
               },
             );
@@ -111,8 +171,10 @@ class _TasksPageState extends State<TasksPage> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: _showAddTaskForm,
-        child: Icon(Icons.add),
+        backgroundColor: Colors.blueAccent,
+        child: Icon(Icons.add, color: Colors.white),
       ),
     );
+
   }
 }
