@@ -72,115 +72,166 @@ class _ProfessionalPatientsPageState extends State<ProfessionalPatientsPage> {
       appBar: AppBar(
         title: Text('Patients'),
       ),
-      body: FutureBuilder<List<Patient>>(
-        future: _patientsFuture,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
-          } else if (snapshot.hasError) {
-            print("Error fetching patients: ${snapshot.error}");
-            return Center(child: Text('Error: ${snapshot.error ?? 'Unknown error'}'));
-          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return Center(child: Text('No patients registered'));
-          } else {
-            final patients = snapshot.data!;
-            return ListView.builder(
-              itemCount: patients.length,
-              itemBuilder: (context, index) {
-                final patient = patients[index];
-                return Card(
-                  child: Container(
-                    padding: EdgeInsets.all(8.0),
-                    constraints: BoxConstraints(minHeight: 300), // Set larger minimum height
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        ListTile(
-                          title: Text(patient.fullName),
-                          subtitle: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+      body: Stack(
+        children: [
+          Container(
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage('assets/bg-display.png'), // Ruta de la imagen
+                fit: BoxFit.cover,
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: FutureBuilder<List<Patient>>(
+              future: _patientsFuture,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Center(child: CircularProgressIndicator());
+                } else if (snapshot.hasError) {
+                  print("Error fetching patients: ${snapshot.error}");
+                  return Center(child: Text('Error: ${snapshot.error ?? 'Unknown error'}'));
+                } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                  return Center(child: Text('No patients registered'));
+                } else {
+                  final patients = snapshot.data!;
+                  return ListView.builder(
+                    itemCount: patients.length,
+                    itemBuilder: (context, index) {
+                      final patient = patients[index];
+                      return Card(
+                        child: Container(
+                          padding: EdgeInsets.all(8.0),
+                          width: double.infinity,
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
-                              Text('Phone: ${patient.phone}'),
-                              Text('Age: ${_calculateAge(patient.birthDate.toString())}'),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    ListTile(
+                                      contentPadding: EdgeInsets.zero,
+                                      title: Text(
+                                        patient.fullName,
+                                        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                                      ),
+                                      subtitle: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Text('Phone: ${patient.phone}'),
+                                          Text('Age: ${_calculateAge(patient.birthDate.toString())}'),
+                                        ],
+                                      ),
+                                    ),
+                                    Divider(),
+                                  ],
+                                ),
+                              ),
+                              // Right side: Square options button
+                              Container(
+                                width: 50, // Square size
+                                height: 50,
+                                child: IconButton(
+                                  icon: Icon(Icons.menu), // Menu icon
+                                  onPressed: () {
+                                    showMenu(
+                                      context: context,
+                                      position: RelativeRect.fromLTRB(
+                                          MediaQuery.of(context).size.width, 100, 10, 0),
+                                      items: [
+                                        PopupMenuItem<String>(
+                                          value: 'Clinical History',
+                                          child: Text('Clinical History'),
+                                        ),
+                                        PopupMenuItem<String>(
+                                          value: 'Diagnostic',
+                                          child: Text('Diagnostic'),
+                                        ),
+                                        PopupMenuItem<String>(
+                                          value: 'Prescription',
+                                          child: Text('Prescription'),
+                                        ),
+                                        PopupMenuItem<String>(
+                                          value: 'Tasks',
+                                          child: Text('Tasks'),
+                                        ),
+                                        PopupMenuItem<String>(
+                                          value: 'Sessions',
+                                          child: Text('Sessions'),
+                                        ),
+                                      ],
+                                    ).then((selectedOption) {
+                                      switch (selectedOption) {
+                                        case 'Clinical History':
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) => ClinicalHistoryPage(
+                                                patientId: patient.patientId,
+                                                token: widget.token,
+                                              ),
+                                            ),
+                                          );
+                                          break;
+                                        case 'Diagnostic':
+                                          _navigateToDiagnostics(context, patient.patientId);
+                                          break;
+                                        case 'Prescription':
+                                          /*
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (context) => PrescriptionView(
+                                                  patientId: patient.patientId,
+                                                  professionalId: widget.professionalId,
+                                                  token: widget.token,
+                                                ),
+                                              ),
+                                            );
+                                          */
+                                          break;
+                                        case 'Tasks':
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) => TasksPage(
+                                                patientId: patient.patientId,
+                                                token: widget.token,
+                                              ),
+                                            ),
+                                          );
+                                          break;
+                                        case 'Sessions':
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) => SessionView(
+                                                patientId: patient.patientId,
+                                                professionalId: widget.professionalId,
+                                                token: widget.token,
+                                              ),
+                                            ),
+                                          );
+                                          break;
+                                      }
+                                    });
+                                  },
+                                ),
+                              ),
                             ],
                           ),
                         ),
-                        Divider(),
-                        Wrap(
-                          spacing: 8,
-                          children: [
-                            ElevatedButton(
-                              onPressed: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => ClinicalHistoryPage(
-                                      patientId: patient.patientId,
-                                      token: widget.token,
-                                    ),
-                                  ),
-                                );
-                              },
-                              child: Text('Clinical History'),
-                            ),
-                            ElevatedButton(
-                              onPressed: () => _navigateToDiagnostics(context, patient.patientId),
-                              child: Text('Diagnostic'),
-                            ),
-                            ElevatedButton(
-                              onPressed: () {
-                               /* Navigator.push(
-                                    context,
-                                  MaterialPageRoute(
-                                    builder: (context) => PrescriptionView(
-                                      patientId: patient.patientId,
-                                      professionalId: widget.professionalId,
-                                      token: widget.token,
-                                    ),
-                                  ),
-                                );*/
-                              },
-                              child: Text('Prescription'),
-                            ),
-                            ElevatedButton(
-                              onPressed: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => TasksPage(
-                                      patientId: patient.patientId,
-                                      token: widget.token,
-                                    ),
-                                  ),
-                                );
-                              },
-                              child: Text('Tasks'),
-                            ),
-                            ElevatedButton(
-                              onPressed: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => SessionView(
-                                      patientId: patient.patientId,
-                                      professionalId: widget.professionalId,
-                                      token: widget.token,
-                                    ),
-                                  ),
-                                );
-                              },
-                              child: Text('Sessions'),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                );
+                      );
+                    },
+                  );
+                }
               },
-            );
-          }
-        },
+            ),
+          ),
+
+        ],
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
