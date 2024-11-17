@@ -89,7 +89,7 @@ class _AddSessionDialogState extends State<AddSessionDialog> {
             }
             widget.onRegister();
           },
-          child: Text('Agregar'),
+          child: Text('Agregar', style: TextStyle(color: Colors.white),),
           style: ElevatedButton.styleFrom(
             backgroundColor: Colors.blueAccent,
           ),

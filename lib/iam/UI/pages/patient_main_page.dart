@@ -26,17 +26,17 @@ class PatientMainPage extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            ElevatedButton(
+            SizedBox(height: 30),
+            _buildStyledButton(
+              label: 'Diagnostic',
               onPressed: () {
                 // Handle diagnostic button press
               },
-              child: Text('Diagnostic'),
-              style: ElevatedButton.styleFrom(
-                minimumSize: Size(double.infinity, 60),
-              ),
             ),
-            SizedBox(height: 20),
-            ElevatedButton(
+
+            SizedBox(height: 30),
+            _buildStyledButton(
+              label: 'Appointments',
               onPressed: ( ) {
                 Navigator.push(
                   context,
@@ -44,37 +44,53 @@ class PatientMainPage extends StatelessWidget {
                     builder: (context) => SessionView(patientId: patientId, professionalId: 1, token: token),
                   ),
                 );
-
-
               },
-              child: Text('Appointments'),
-              style: ElevatedButton.styleFrom(
-                minimumSize: Size(double.infinity, 60),
-              ),
             ),
-            SizedBox(height: 20),
-            ElevatedButton(
+
+            SizedBox(height: 30),
+            _buildStyledButton(
+              label: 'Clinical History',
               onPressed: () {
-                // Handle clinical history button press
+                // Handle diagnostic button press
               },
-              child: Text('Clinical History'),
-              style: ElevatedButton.styleFrom(
-                minimumSize: Size(double.infinity, 60),
-              ),
             ),
-            SizedBox(height: 20),
-            ElevatedButton(
+
+            SizedBox(height: 30),
+            _buildStyledButton(
+              label: 'Prescription',
               onPressed: () {
-                // Handle prescription button press
+                // Handle diagnostic button press
               },
-              child: Text('Prescription'),
-              style: ElevatedButton.styleFrom(
-                minimumSize: Size(double.infinity, 60),
-              ),
             ),
           ],
         ),
       ),
     );
   }
+
+  Widget _buildStyledButton({
+    required String label,
+    required VoidCallback onPressed,
+  }) {
+    return ElevatedButton.icon(
+      onPressed: onPressed,
+      label: Text(
+        label,
+        style: TextStyle(
+          fontSize: 18,
+          fontWeight: FontWeight.bold,
+          color: Colors.white,
+        ),
+      ),
+      style: ElevatedButton.styleFrom(
+        backgroundColor: Colors.blueAccent, // Button background color
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12), // Rounded corners
+        ),
+        minimumSize: Size(double.infinity, 60), // Full width and height
+        elevation: 6.0, // Shadow to make the button pop
+      ),
+    );
+  }
+
 }

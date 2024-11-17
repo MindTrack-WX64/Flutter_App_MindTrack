@@ -127,13 +127,7 @@ class _SessionViewState extends State<SessionView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          'Sessions',
-          style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-        ),
-        backgroundColor: Colors.blue,
-        centerTitle: true,
-        elevation: 4.0,
+        title: Text('Sessions'),
       ),
       body: FutureBuilder<List<Map<String, dynamic>>>(
         future: _sessionsWithNamesFuture,
@@ -167,7 +161,7 @@ class _SessionViewState extends State<SessionView> {
                       'Patient: ${session['patientName']}',
                       style: TextStyle(fontSize: 14, color: Colors.grey[600]),
                     ),
-                    leading: Icon(Icons.calendar_today, color: Colors.blue),
+                    leading: Icon(Icons.calendar_today, color: Colors.blueAccent),
                   ),
                 );
               },
@@ -177,7 +171,7 @@ class _SessionViewState extends State<SessionView> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: _showAddSessionDialog,
-        backgroundColor: Colors.blue,
+        backgroundColor: Colors.blueAccent,
         child: Icon(Icons.add, color: Colors.white),
       ),
     );

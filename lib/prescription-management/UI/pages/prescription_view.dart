@@ -58,13 +58,7 @@ class _PrescriptionViewState extends State<PrescriptionView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          'Prescriptions',
-          style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-        ),
-        backgroundColor: Colors.blue,
-        centerTitle: true,
-        elevation: 4.0,
+        title: Text('Prescriptions'),
       ),
       body: FutureBuilder<List<Map<String, dynamic>>>(  // FutureBuilder to load prescriptions
         future: _prescriptionsWithNamesFuture,
@@ -90,7 +84,7 @@ class _PrescriptionViewState extends State<PrescriptionView> {
                   ),
                   elevation: 3,
                   child: ExpansionTile(
-                    leading: Icon(Icons.medical_services, color: Colors.blue),
+                    leading: Icon(Icons.medical_services, color: Colors.blueAccent),
                     title: Text(
                       'Start Date: $formattedStartDate\nEnd Date: $formattedEndDate',
                       style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
@@ -104,7 +98,7 @@ class _PrescriptionViewState extends State<PrescriptionView> {
                       ListTile(
                         trailing: TextButton(
                           onPressed: () => _navigateToPillsView(prescription),
-                          child: Text('See Pills', style: TextStyle(color: Colors.blue)),
+                          child: Text('See Pills', style: TextStyle(color: Colors.blueAccent)),
                         ),
                       ),
                     ],
@@ -127,7 +121,7 @@ class _PrescriptionViewState extends State<PrescriptionView> {
             ),
           );
         },
-        backgroundColor: Colors.blue,
+        backgroundColor: Colors.blueAccent,
         child: Icon(Icons.add, color: Colors.white),
       ),
     );
