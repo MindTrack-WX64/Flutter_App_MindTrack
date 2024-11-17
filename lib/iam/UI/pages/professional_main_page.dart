@@ -13,7 +13,7 @@ class ProfessionalMainPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('MindTrack', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+        title: Text('MindTrack', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.white)),
         backgroundColor: Colors.blueAccent,
         centerTitle: true,
         elevation: 4.0,
