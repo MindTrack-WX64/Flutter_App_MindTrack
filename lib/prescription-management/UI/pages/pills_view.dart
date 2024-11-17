@@ -18,13 +18,8 @@ class _PillsViewState extends State<PillsView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          'Pills List',
-          style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-        ),
-        backgroundColor: Colors.blue,
-        centerTitle: true,
-        elevation: 4.0,
+        title: Text('Pills List'),
+
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -55,7 +50,7 @@ class _PillsViewState extends State<PillsView> {
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
-                        color: Colors.blue,
+                        color: Colors.blueAccent,
                       ),
                     ),
                     SizedBox(height: 8.0),
@@ -82,8 +77,8 @@ class _PillsViewState extends State<PillsView> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => _showPillsDialog(),
-        child: Icon(Icons.add),
-        backgroundColor: Colors.blue,
+        child: Icon(Icons.add, color: Colors.white,),
+        backgroundColor: Colors.blueAccent,
       ),
     );
   }
@@ -133,7 +128,10 @@ class _PillsViewState extends State<PillsView> {
                 _addPillsToPrescription(pill);
                 Navigator.pop(context); // Close the dialog after saving
               },
-              child: Text('Save'),
+                child: Text('Save', style: TextStyle(color: Colors.white),),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.blueAccent,
+                )
             ),
             TextButton(
               onPressed: () {

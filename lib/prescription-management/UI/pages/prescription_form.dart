@@ -70,8 +70,6 @@ class _PrescriptionFormState extends State<PrescriptionForm> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Create Prescription'),
-        backgroundColor: Colors.blueAccent,
-        centerTitle: true,
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 16.0),

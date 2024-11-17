@@ -69,7 +69,10 @@ class _TasksPageState extends State<TasksPage> {
             ),
             TextButton(
               onPressed: _addTask,
-              child: Text('Add'),
+              child: Text('Add', style: TextStyle(color: Colors.white),),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.blueAccent,
+              )
             ),
           ],
         );
