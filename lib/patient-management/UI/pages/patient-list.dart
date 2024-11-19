@@ -31,6 +31,7 @@ class _ProfessionalPatientsPageState extends State<ProfessionalPatientsPage> {
   Future<List<Patient>> _fetchPatients() async {
     final patientService = PatientService();
     final patients = await patientService.getPatientsByProfessionalId(widget.professionalId, widget.token);
+    print('Patients: $patients');
     return patients;
   }
 

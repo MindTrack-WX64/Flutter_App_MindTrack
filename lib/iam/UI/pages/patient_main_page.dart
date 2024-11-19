@@ -41,7 +41,7 @@ class PatientMainPage extends StatelessWidget {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => SessionView(patientId: patientId, professionalId: 1, token: token),
+                    builder: (context) => SessionView(patientId: patientId, token: token),
                   ),
                 );
               },

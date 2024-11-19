@@ -3,14 +3,15 @@ import 'package:intl/intl.dart';
 import 'package:mind_track_flutter_app/session-management/services/session_service.dart';
 import 'package:mind_track_flutter_app/shared/services/patient_service.dart';
 import '../../../shared/model/patient_entity.dart';
+import '../../../shared/services/professional_service.dart';
 import 'add_session_dialog.dart';
 
 class SessionView extends StatefulWidget {
   final int? patientId;
-  final int professionalId;
+  final int? professionalId;
   final String token;
 
-  SessionView({this.patientId, required this.professionalId, required this.token});
+  const SessionView({this.patientId, this.professionalId, required this.token, Key? key}) : super(key: key);
 
   @override
   _SessionViewState createState() => _SessionViewState();
@@ -22,6 +23,7 @@ class _SessionViewState extends State<SessionView> {
   late Future<List<Map<String, dynamic>>> _sessionsWithNamesFuture;
   final sessionService = SessionService();
   final patientService = PatientService();
+  final professionalService = ProfessionalService();
 
   @override
   void initState() {
@@ -37,32 +39,33 @@ class _SessionViewState extends State<SessionView> {
 
   Future<List<Map<String, dynamic>>> _getSessionsWithNames() async {
     try {
-      final sessions = await sessionService.findByProfessionalId(widget.professionalId, widget.token);
       final sessionsWithNames = <Map<String, dynamic>>[];
+      final sessions = widget.professionalId != null
+          ? await sessionService.findByProfessionalId(widget.professionalId!, widget.token)
+          : await sessionService.findByPatientId(widget.patientId!, widget.token);
 
       for (var session in sessions) {
-        var patientName = await patientService.getPatientNameById(session.patientId, widget.token)
-            .catchError((_) => 'Unknown');
+        final associatedName = widget.professionalId != null
+            ? await patientService.getPatientNameById(session.patientId, widget.token).catchError((_) => 'Unknown')
+            : await professionalService.getProfessionalNameById(session.professionalId, widget.token).catchError((_) => 'Unknown');
+
         sessionsWithNames.add({
           'sessionDate': session.sessionDate,
-          'patientName': patientName,
+          'associatedName': associatedName,
         });
       }
       return sessionsWithNames;
     } catch (e) {
-      return Future.error('Failed to load sessions or no sessions found');
+      return Future.error('Failed to load sessions');
     }
   }
 
-  void _register() async {
-    final professionalId = widget.professionalId;
+  void _registerSession() async {
     final sessionDate = _sessionDateController.text;
     final patientId = _patientIdController.text;
 
     if (sessionDate.isEmpty || patientId.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Please fill in all fields')),
-      );
+      _showSnackBar('Please fill in all fields');
       return;
     }
 
@@ -70,27 +73,22 @@ class _SessionViewState extends State<SessionView> {
       final date = DateFormat('yyyy-MM-dd').parseStrict(sessionDate);
       final sessionData = {
         'patientId': int.parse(patientId),
-        'professionalId': professionalId,
+        'professionalId': widget.professionalId,
         'sessionDate': date.toIso8601String(),
       };
 
       await sessionService.createSession(sessionData, widget.token);
       Navigator.of(context).pop();
       _fetchSessionsWithNames();
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Registration successful')),
-      );
+      _showSnackBar('Session registered successfully');
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to register: Invalid date format or patient ID')),
-      );
+      _showSnackBar('Invalid date format or patient ID');
     }
   }
 
   Future<List<Patient>> _getProfessionalPatients() async {
     try {
-      final patients = await patientService.getPatientsByProfessionalId(widget.professionalId, widget.token);
-      return patients;
+      return await patientService.getPatientsByProfessionalId(widget.professionalId!, widget.token);
     } catch (e) {
       return Future.error('Failed to load patients');
     }
@@ -99,7 +97,7 @@ class _SessionViewState extends State<SessionView> {
   void _showAddSessionDialog() {
     showDialog(
       context: context,
-      builder: (BuildContext context) {
+      builder: (context) {
         return FutureBuilder<List<Patient>>(
           future: _getProfessionalPatients(),
           builder: (context, snapshot) {
@@ -108,12 +106,14 @@ class _SessionViewState extends State<SessionView> {
             } else if (snapshot.hasError) {
               return Center(child: Text('Error: ${snapshot.error}'));
             } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-              return Center(child: Text('No patients found', style: TextStyle(fontSize: 18, color: Colors.grey)));
+              return Center(
+                child: Text('No patients found', style: TextStyle(fontSize: 18, color: Colors.grey)),
+              );
             } else {
               return AddSessionDialog(
                 sessionDateController: _sessionDateController,
                 patientIdController: _patientIdController,
-                onRegister: _register,
+                onRegister: _registerSession,
                 patientNames: snapshot.data!,
               );
             }
@@ -121,6 +121,10 @@ class _SessionViewState extends State<SessionView> {
         );
       },
     );
+  }
+
+  void _showSnackBar(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
   }
 
   @override
@@ -137,13 +141,14 @@ class _SessionViewState extends State<SessionView> {
           } else if (snapshot.hasError) {
             return Center(child: Text('Error: ${snapshot.error}'));
           } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return Center(child: Text('No sessions found', style: TextStyle(fontSize: 18, color: Colors.grey)));
+            return Center(
+              child: Text('No sessions found', style: TextStyle(fontSize: 18, color: Colors.grey)),
+            );
           } else {
-            final sessionsWithNames = snapshot.data!;
             return ListView.builder(
-              itemCount: sessionsWithNames.length,
+              itemCount: snapshot.data!.length,
               itemBuilder: (context, index) {
-                final session = sessionsWithNames[index];
+                final session = snapshot.data![index];
                 final formattedDate = DateFormat('yyyy-MM-dd').format(session['sessionDate']);
                 return Card(
                   margin: EdgeInsets.symmetric(horizontal: 12.0, vertical: 6.0),
@@ -158,7 +163,7 @@ class _SessionViewState extends State<SessionView> {
                       style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                     ),
                     subtitle: Text(
-                      'Patient: ${session['patientName']}',
+                      'Name: ${session['associatedName']}',
                       style: TextStyle(fontSize: 14, color: Colors.grey[600]),
                     ),
                     leading: Icon(Icons.calendar_today, color: Colors.blueAccent),
