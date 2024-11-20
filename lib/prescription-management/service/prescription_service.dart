@@ -11,9 +11,7 @@ class PrescriptionService extends BaseService<Prescription> {
 
 
   Future<http.Response> addPill(int prescriptionId, Pill pillData, String token) async {
-    print(pillData);
 
-    // Enviar la solicitud PUT al backend con los datos ya procesados
     final response = await http.put(
       Uri.parse('$apiUrl$resourceEndpoint/$prescriptionId/pills'),
       headers: {
@@ -23,7 +21,6 @@ class PrescriptionService extends BaseService<Prescription> {
       body: json.encode(pillData),
     );
 
-    // Comprobar el código de estado de la respuesta
     if (response.statusCode != 200) {
       throw Exception('Failed to add pill');
     }
@@ -81,34 +78,36 @@ class PrescriptionService extends BaseService<Prescription> {
   }
 
 
-  Future<Map<String, dynamic>> findByPatientId(int patientId, String token) async {
-    final response = await http.get(
-      Uri.parse('$apiUrl$resourceEndpoint?patientId=$patientId'),
-      headers: {
-        'Authorization': 'Bearer $token',
-      },
-    );
-
-    if (response.statusCode == 200) {
-      final prescription = json.decode(response.body);
-      if (prescription.isNotEmpty) {
-        print(prescription);
-        return prescription[0];
-      } else {
-        throw Exception('No prescriptions found for patient');
-      }
-    } else {
-      throw Exception('Failed to load prescriptions');
-    }
-  }
+  // Future<Map<String, dynamic>> findByPatientId(int patientId, String token) async {
+  //   final response = await http.get(
+  //     Uri.parse('$apiUrl$resourceEndpoint?patientId=$patientId'),
+  //     headers: {
+  //       'Authorization': 'Bearer $token',
+  //     },
+  //   );
+  //
+  //   if (response.statusCode == 200) {
+  //     final prescription = json.decode(response.body);
+  //     if (prescription.isNotEmpty) {
+  //       print(prescription);
+  //       return prescription[0];
+  //     } else {
+  //       throw Exception('No prescriptions found for patient');
+  //     }
+  //   } else {
+  //     throw Exception('Failed to load prescriptions');
+  //   }
+  // }
 
   Future<List<Prescription>> getPrescriptionsByPatientId(int patientId, String token) async {
+    print("patientId: $patientId");
     final response = await http.get(
-      Uri.parse('$apiUrl$resourceEndpoint?patientId=$patientId'),
+      Uri.parse('$apiUrl$resourceEndpoint/patient/$patientId'),
       headers: {
         'Authorization': 'Bearer $token',
       },
     );
+    print("response.body: ${response.body}");
 
     if (response.statusCode == 200) {
       final prescriptions = json.decode(response.body);
