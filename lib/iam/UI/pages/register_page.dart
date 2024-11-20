@@ -19,6 +19,10 @@ class _RegisterPageState extends State<RegisterPage> {
   final TextEditingController _professionalTypeController = TextEditingController();
   final RegisterService _registerService = RegisterService();
 
+
+  bool _termsAccepted = false;
+  bool _showError = false;
+
   void _register() async {
     final username = _usernameController.text;
     final password = _passwordController.text;
@@ -35,28 +39,37 @@ class _RegisterPageState extends State<RegisterPage> {
       return;
     }
 
-    try {
-      final birthDate = DateFormat('yyyy-MM-dd').parseStrict(birthDateStr);
+    if (_termsAccepted) {
+      try {
+        final birthDate = DateFormat('yyyy-MM-dd').parseStrict(birthDateStr);
 
-      final professional = Professional(
-        username: username,
-        password: password,
-        fullName: fullName,
-        email: email,
-        phone: phone,
-        birthDate: birthDate,
-        professionalType: professionalType,
-      );
+        final professional = Professional(
+          username: username,
+          password: password,
+          fullName: fullName,
+          email: email,
+          phone: phone,
+          birthDate: birthDate,
+          professionalType: professionalType,
+        );
 
-      await _registerService.register(professional);
+        await _registerService.register(professional);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Registration successful')),
+        );
+        Navigator.pop(context); // Regresa a la página de login
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Registration failed: $e')),
+        );
+      }
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Registration successful')),
+        SnackBar(content: Text('Registration successful!')),
       );
-      Navigator.pop(context); // Regresa a la página de login
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Registration failed: $e')),
-      );
+    } else {
+      setState(() {
+        _showError = true;
+      });
     }
   }
 
@@ -114,155 +127,192 @@ class _RegisterPageState extends State<RegisterPage> {
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(30.0),
                 ),
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 18.0, horizontal: 20.0),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Center(
-                        child: Text(
-                          'Register',
-                          style: TextStyle(
-                            fontSize: 32.0,
-                            fontWeight: FontWeight.bold,
+                child: SingleChildScrollView(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 18.0, horizontal: 20.0),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Center(
+                          child: Text(
+                            'Register',
+                            style: TextStyle(
+                              fontSize: 32.0,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         ),
-                      ),
-                      SizedBox(height: 20),
-                      TextField(
-                        controller: _usernameController,
-                        decoration: InputDecoration(
-                          labelText: 'Username',
-                          prefixIcon: Icon(Icons.person),
-                          enabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.blue),
-                            borderRadius: BorderRadius.circular(25.0),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.blue),
-                            borderRadius: BorderRadius.circular(25.0),
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: 20),
-                      TextField(
-                        controller: _passwordController,
-                        decoration: InputDecoration(
-                          labelText: 'Password',
-                          prefixIcon: Icon(Icons.lock),
-                          enabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.blue),
-                            borderRadius: BorderRadius.circular(25.0),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.blue),
-                            borderRadius: BorderRadius.circular(25.0),
-                          ),
-                        ),
-                        obscureText: true,
-                      ),
-                      SizedBox(height: 20),
-                      TextField(
-                        controller: _fullNameController,
-                        decoration: InputDecoration(
-                          labelText: 'Full Name',
-                          prefixIcon: Icon(Icons.person_outline),
-                          enabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.blue),
-                            borderRadius: BorderRadius.circular(25.0),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.blue),
-                            borderRadius: BorderRadius.circular(25.0),
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: 20),
-                      TextField(
-                        controller: _emailController,
-                        decoration: InputDecoration(
-                          labelText: 'Email',
-                          prefixIcon: Icon(Icons.email),
-                          enabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.blue),
-                            borderRadius: BorderRadius.circular(25.0),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.blue),
-                            borderRadius: BorderRadius.circular(25.0),
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: 20),
-                      TextField(
-                        controller: _phoneController,
-                        decoration: InputDecoration(
-                          labelText: 'Phone',
-                          prefixIcon: Icon(Icons.phone),
-                          enabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.blue),
-                            borderRadius: BorderRadius.circular(25.0),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.blue),
-                            borderRadius: BorderRadius.circular(25.0),
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: 20),
-                      TextField(
-                        controller: _birthDateController,
-                        readOnly: true,
-                        decoration: InputDecoration(
-                          labelText: 'Birth Date',
-                          prefixIcon: Icon(Icons.calendar_today),
-                          enabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.blue),
-                            borderRadius: BorderRadius.circular(25.0),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.blue),
-                            borderRadius: BorderRadius.circular(25.0),
-                          ),
-                        ),
-                        onTap: () => _selectDate(context),
-                      ),
-                      SizedBox(height: 20),
-                      TextField(
-                        controller: _professionalTypeController,
-                        decoration: InputDecoration(
-                          labelText: 'Professional Type',
-                          prefixIcon: Icon(Icons.work),
-                          enabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.blue),
-                            borderRadius: BorderRadius.circular(25.0),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.blue),
-                            borderRadius: BorderRadius.circular(25.0),
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: 25),
-                      SizedBox(
-                        width: double.infinity,
-                        child: ElevatedButton(
-                          onPressed: _register,
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.blue, // Background color
-                            foregroundColor: Colors.white, // Text color
-                            padding: EdgeInsets.all(10), // Padding
-                            shape: RoundedRectangleBorder(
+                        SizedBox(height: 20),
+                        TextField(
+                          controller: _usernameController,
+                          decoration: InputDecoration(
+                            labelText: 'Username',
+                            prefixIcon: Icon(Icons.person),
+                            enabledBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: Colors.blue),
+                              borderRadius: BorderRadius.circular(25.0),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: Colors.blue),
                               borderRadius: BorderRadius.circular(25.0),
                             ),
                           ),
-                          child: Text(
-                            'Register',
-                            style: TextStyle(fontSize: 24.0),
+                        ),
+                        SizedBox(height: 20),
+                        TextField(
+                          controller: _passwordController,
+                          decoration: InputDecoration(
+                            labelText: 'Password',
+                            prefixIcon: Icon(Icons.lock),
+                            enabledBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: Colors.blue),
+                              borderRadius: BorderRadius.circular(25.0),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: Colors.blue),
+                              borderRadius: BorderRadius.circular(25.0),
+                            ),
+                          ),
+                          obscureText: true,
+                        ),
+                        SizedBox(height: 20),
+                        TextField(
+                          controller: _fullNameController,
+                          decoration: InputDecoration(
+                            labelText: 'Full Name',
+                            prefixIcon: Icon(Icons.person_outline),
+                            enabledBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: Colors.blue),
+                              borderRadius: BorderRadius.circular(25.0),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: Colors.blue),
+                              borderRadius: BorderRadius.circular(25.0),
+                            ),
                           ),
                         ),
-                      ),
-                    ],
+                        SizedBox(height: 20),
+                        TextField(
+                          controller: _emailController,
+                          decoration: InputDecoration(
+                            labelText: 'Email',
+                            prefixIcon: Icon(Icons.email),
+                            enabledBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: Colors.blue),
+                              borderRadius: BorderRadius.circular(25.0),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: Colors.blue),
+                              borderRadius: BorderRadius.circular(25.0),
+                            ),
+                          ),
+                        ),
+                        SizedBox(height: 20),
+                        TextField(
+                          controller: _phoneController,
+                          decoration: InputDecoration(
+                            labelText: 'Phone',
+                            prefixIcon: Icon(Icons.phone),
+                            enabledBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: Colors.blue),
+                              borderRadius: BorderRadius.circular(25.0),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: Colors.blue),
+                              borderRadius: BorderRadius.circular(25.0),
+                            ),
+                          ),
+                        ),
+                        SizedBox(height: 20),
+                        TextField(
+                          controller: _birthDateController,
+                          readOnly: true,
+                          decoration: InputDecoration(
+                            labelText: 'Birth Date',
+                            prefixIcon: Icon(Icons.calendar_today),
+                            enabledBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: Colors.blue),
+                              borderRadius: BorderRadius.circular(25.0),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: Colors.blue),
+                              borderRadius: BorderRadius.circular(25.0),
+                            ),
+                          ),
+                          onTap: () => _selectDate(context),
+                        ),
+                        SizedBox(height: 20),
+                        TextField(
+                          controller: _professionalTypeController,
+                          decoration: InputDecoration(
+                            labelText: 'Professional Type',
+                            prefixIcon: Icon(Icons.work),
+                            enabledBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: Colors.blue),
+                              borderRadius: BorderRadius.circular(25.0),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: Colors.blue),
+                              borderRadius: BorderRadius.circular(25.0),
+                            ),
+                          ),
+                        ),
+                        SizedBox(height: 20),
+                        Row(
+                          children: [
+                            Checkbox(
+                              value: _termsAccepted,
+                              onChanged: (bool? value) {
+                                setState(() {
+                                  _termsAccepted = value ?? false;
+                                  _showError = false;
+                                });
+                              },
+                            ),
+                            Expanded(
+                              child: GestureDetector(
+                                onTap: () {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(content: Text('Opening Terms and Conditions...')),
+                                  );
+                                },
+                                child: Text(
+                                  'I agree to the Terms and Conditions',
+                                  style: TextStyle(decoration: TextDecoration.underline, color: Colors.indigo),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        if (_showError)
+                          Padding(
+                            padding: const EdgeInsets.only(left: 8.0),
+                            child: Text(
+                              'You must accept the terms and conditions to register',
+                              style: TextStyle(color: Colors.red, fontSize: 12),
+                            ),
+                          ),
+                        SizedBox(height: 25),
+                        SizedBox(
+                          width: double.infinity,
+                          child: ElevatedButton(
+                            onPressed: _register,
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.blue,
+                              foregroundColor: Colors.white,
+                              padding: EdgeInsets.all(10),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(25.0),
+                              ),
+                            ),
+                            child: Text(
+                              'Register',
+                              style: TextStyle(fontSize: 24.0),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
