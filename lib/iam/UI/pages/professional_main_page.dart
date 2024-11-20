@@ -87,7 +87,6 @@ class ProfessionalMainPage extends StatelessWidget {
                   context,
                   MaterialPageRoute(
                     builder: (context) => SessionView(
-                      patientId: 4,
                       professionalId: professionalId,
                       token: token,
                     ),
