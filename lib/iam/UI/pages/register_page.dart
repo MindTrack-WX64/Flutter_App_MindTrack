@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:mind_track_flutter_app/iam/UI/pages/terms.dart';
 import 'package:mind_track_flutter_app/shared/model/professional_entity.dart';
 
 import '../../services/register_service.dart';
@@ -18,7 +19,6 @@ class _RegisterPageState extends State<RegisterPage> {
   final TextEditingController _birthDateController = TextEditingController();
   final TextEditingController _professionalTypeController = TextEditingController();
   final RegisterService _registerService = RegisterService();
-
 
   bool _termsAccepted = false;
   bool _showError = false;
@@ -276,15 +276,21 @@ class _RegisterPageState extends State<RegisterPage> {
                                 });
                               },
                             ),
+                            Text(
+                              'I agree to the ',
+                            ),
                             Expanded(
                               child: GestureDetector(
                                 onTap: () {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(content: Text('Opening Terms and Conditions...')),
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => TermsAndConditionsPage(),
+                                    ),
                                   );
                                 },
                                 child: Text(
-                                  'I agree to the Terms and Conditions',
+                                  'Terms and Conditions',
                                   style: TextStyle(decoration: TextDecoration.underline, color: Colors.indigo),
                                 ),
                               ),

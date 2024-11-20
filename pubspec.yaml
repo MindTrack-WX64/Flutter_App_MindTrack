@@ -60,6 +60,8 @@ flutter:
   - assets/bgAddPatient.png
   - assets/icAddPatient.png
   - assets/bg-professional-main.png
+  - assets/bg-display.png
+  - assets/terms.txt
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.
