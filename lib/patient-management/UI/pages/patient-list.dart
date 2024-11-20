@@ -207,9 +207,10 @@ class _ProfessionalPatientsPageState extends State<ProfessionalPatientsPage> {
                                           Navigator.push(
                                             context,
                                             MaterialPageRoute(
-                                              builder: (context) => PatientSessionView(
+                                              builder: (context) => SessionView(
                                                 patientId: patient.patientId,
                                                 token: widget.token,
+                                                role: "professional",
                                               ),
                                             ),
                                           );

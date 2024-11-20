@@ -10,8 +10,9 @@ class SessionView extends StatefulWidget {
   final int? patientId;
   final int? professionalId;
   final String token;
+  final String role;
 
-  const SessionView({this.patientId, this.professionalId, required this.token, Key? key}) : super(key: key);
+  const SessionView({this.patientId, this.professionalId, required this.token, required this.role, Key? key}) : super(key: key);
 
   @override
   _SessionViewState createState() => _SessionViewState();
@@ -24,11 +25,16 @@ class _SessionViewState extends State<SessionView> {
   final sessionService = SessionService();
   final patientService = PatientService();
   final professionalService = ProfessionalService();
+  late final Patient patient;
 
   @override
   void initState() {
     super.initState();
     _fetchSessionsWithNames();
+    if(widget.patientId != null){
+      _getPatientById(widget.patientId!);
+    }
+
   }
 
   void _fetchSessionsWithNames() {
@@ -71,11 +77,20 @@ class _SessionViewState extends State<SessionView> {
 
     try {
       final date = DateFormat('yyyy-MM-dd').parseStrict(sessionDate);
-      final sessionData = {
-        'patientId': int.parse(patientId),
-        'professionalId': widget.professionalId,
-        'sessionDate': date.toIso8601String(),
-      };
+      var sessionData;
+      if(widget.patientId != null ) {
+        sessionData = {
+          'patientId': widget.patientId,
+          'professionalId': patient.professionalId,
+          'sessionDate': date.toIso8601String(),
+        };
+      } else {
+        sessionData = {
+          'patientId': int.parse(patientId),
+          'professionalId': widget.professionalId,
+          'sessionDate': date.toIso8601String(),
+        };
+      }
 
       await sessionService.createSession(sessionData, widget.token);
       Navigator.of(context).pop();
@@ -94,31 +109,52 @@ class _SessionViewState extends State<SessionView> {
     }
   }
 
+  Future<Patient> _getPatientById(int patientId) async {
+    try {
+      return patient= await patientService.getByPatientId(patientId, widget.token);
+
+    } catch (e) {
+      return Future.error('Failed to load patient');
+    }
+  }
+
   void _showAddSessionDialog() {
     showDialog(
       context: context,
       builder: (context) {
-        return FutureBuilder<List<Patient>>(
-          future: _getProfessionalPatients(),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return Center(child: CircularProgressIndicator());
-            } else if (snapshot.hasError) {
-              return Center(child: Text('Error: ${snapshot.error}'));
-            } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-              return Center(
-                child: Text('No patients found', style: TextStyle(fontSize: 18, color: Colors.grey)),
-              );
-            } else {
-              return AddSessionDialog(
-                sessionDateController: _sessionDateController,
-                patientIdController: _patientIdController,
-                onRegister: _registerSession,
-                patientNames: snapshot.data!,
-              );
-            }
-          },
-        );
+        // Si tenemos un patientId, mostramos un FutureBuilder para obtener los detalles de ese paciente
+        if (widget.patientId != null) {
+          return AddSessionDialog(
+            sessionDateController: _sessionDateController,
+            patientIdController: _patientIdController,
+            onRegister: _registerSession,
+            patient: patient,
+          );
+        } else {
+          // Si no tenemos un patientId, buscamos todos los pacientes asociados al profesional
+          return FutureBuilder<List<Patient>>(
+            future: _getProfessionalPatients(), // Método para obtener todos los pacientes asociados al profesional
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return Center(child: CircularProgressIndicator()); // Esperando a que se obtengan los pacientes
+              } else if (snapshot.hasError) {
+                return Center(child: Text('Error: ${snapshot.error}')); // Si hay error al cargar los pacientes
+              } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                return Center(
+                  child: Text('No se encontraron pacientes', style: TextStyle(fontSize: 18, color: Colors.grey)),
+                ); // Si no se encuentran pacientes
+              } else {
+                // Si se encuentran pacientes, los pasamos al AddSessionDialog
+                return AddSessionDialog(
+                  sessionDateController: _sessionDateController,
+                  patientIdController: _patientIdController,
+                  onRegister: _registerSession,
+                  patientNames: snapshot.data!, // Lista de pacientes
+                );
+              }
+            },
+          );
+        }
       },
     );
   }
@@ -174,11 +210,13 @@ class _SessionViewState extends State<SessionView> {
           }
         },
       ),
-      floatingActionButton: FloatingActionButton(
+      floatingActionButton: widget.role == 'professional'
+          ? FloatingActionButton(
         onPressed: _showAddSessionDialog,
         backgroundColor: Colors.blueAccent,
         child: Icon(Icons.add, color: Colors.white),
-      ),
+      )
+          : null,
     );
   }
 }

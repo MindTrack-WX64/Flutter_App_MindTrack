@@ -89,6 +89,7 @@ class ProfessionalMainPage extends StatelessWidget {
                     builder: (context) => SessionView(
                       professionalId: professionalId,
                       token: token,
+                      role: "professional",
                     ),
                   ),
                 );
