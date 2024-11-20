@@ -21,6 +21,38 @@ class AddSessionDialog extends StatefulWidget {
 class _AddSessionDialogState extends State<AddSessionDialog> {
   Patient? _selectedPatient;
 
+  Future<void> _selectDate(BuildContext context) async {
+    final DateTime? pickedDate = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(), // Fecha inicial
+      firstDate: DateTime.now(),   // Fecha mínima
+      lastDate: DateTime.now().add(const Duration(days: 30)),   // Fecha máxima
+      builder: (BuildContext context, Widget? child) {
+        return Theme(
+          data: Theme.of(context).copyWith(
+            colorScheme: ColorScheme.light(
+              primary: Colors.blueAccent, // Color principal
+              onPrimary: Colors.white, // Color de texto en el botón seleccionado
+              onSurface: Colors.black, // Color del texto del calendario
+            ),
+            textButtonTheme: TextButtonThemeData(
+              style: TextButton.styleFrom(
+                foregroundColor: Colors.blueAccent, // Color de los botones (CANCELAR/OK)
+              ),
+            ),
+          ),
+          child: child!,
+        );
+      },
+    );
+
+    if (pickedDate != null) {
+      setState(() {
+        widget.sessionDateController.text = "${pickedDate.year}-${pickedDate.month}-${pickedDate.day}";
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
@@ -32,8 +64,9 @@ class _AddSessionDialogState extends State<AddSessionDialog> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            TextField(
+            TextFormField(
               controller: widget.sessionDateController,
+              readOnly: true,
               decoration: InputDecoration(
                 labelText: 'Fecha de la Sesión',
                 prefixIcon: Icon(Icons.calendar_today, color: Colors.blueAccent),
@@ -42,7 +75,13 @@ class _AddSessionDialogState extends State<AddSessionDialog> {
                   borderSide: BorderSide(color: Colors.blueAccent),
                 ),
               ),
-              keyboardType: TextInputType.datetime,
+              onTap: () => _selectDate(context),
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Please enter a birth date';
+                }
+                return null;
+              },
             ),
             SizedBox(height: 16.0),
             DropdownButtonFormField<Patient>(

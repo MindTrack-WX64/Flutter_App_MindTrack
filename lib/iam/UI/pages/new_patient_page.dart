@@ -75,6 +75,37 @@ class _NewPatientPageState extends State<NewPatientPage> {
     await clinicalHistoryService.createClinicalHistory(newClinicalHistory, widget.token);
   }
 
+  Future<void> _selectDate(BuildContext context) async {
+    final DateTime? pickedDate = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(), // Fecha inicial
+      firstDate: DateTime(1940),   // Fecha mínima
+      lastDate: DateTime.now(),   // Fecha máxima
+      builder: (BuildContext context, Widget? child) {
+        return Theme(
+          data: Theme.of(context).copyWith(
+            colorScheme: ColorScheme.light(
+              primary: Colors.blueAccent, // Color principal
+              onPrimary: Colors.white, // Color de texto en el botón seleccionado
+              onSurface: Colors.black, // Color del texto del calendario
+            ),
+            textButtonTheme: TextButtonThemeData(
+              style: TextButton.styleFrom(
+                foregroundColor: Colors.blueAccent, // Color de los botones (CANCELAR/OK)
+              ),
+            ),
+          ),
+          child: child!,
+        );
+      },
+    );
+
+    if (pickedDate != null) {
+      setState(() {
+        _birthDateController.text = "${pickedDate.year}-${pickedDate.month}-${pickedDate.day}";
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -220,6 +251,7 @@ class _NewPatientPageState extends State<NewPatientPage> {
                         SizedBox(height: 20),
                         TextFormField(
                           controller: _birthDateController,
+                          readOnly: true,
                           decoration: InputDecoration(
                             labelText: 'Birth Date',
                             prefixIcon: Icon(Icons.calendar_today),
@@ -232,6 +264,7 @@ class _NewPatientPageState extends State<NewPatientPage> {
                               borderRadius: BorderRadius.circular(25.0),
                             ),
                           ),
+                          onTap: () => _selectDate(context),
                           validator: (value) {
                             if (value == null || value.isEmpty) {
                               return 'Please enter a birth date';

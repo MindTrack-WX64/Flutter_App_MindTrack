@@ -65,6 +65,70 @@ class _PrescriptionFormState extends State<PrescriptionForm> {
     }
   }
 
+  Future<void> _selectStartDate(BuildContext context) async {
+    final DateTime? pickedDate = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(), // Fecha inicial
+      firstDate: DateTime.now(),   // Fecha mínima
+      lastDate: DateTime.now().add(const Duration(days: 100)),   // Fecha máxima
+      builder: (BuildContext context, Widget? child) {
+        return Theme(
+          data: Theme.of(context).copyWith(
+            colorScheme: ColorScheme.light(
+              primary: Colors.blueAccent, // Color principal
+              onPrimary: Colors.white, // Color de texto en el botón seleccionado
+              onSurface: Colors.black, // Color del texto del calendario
+            ),
+            textButtonTheme: TextButtonThemeData(
+              style: TextButton.styleFrom(
+                foregroundColor: Colors.blueAccent, // Color de los botones (CANCELAR/OK)
+              ),
+            ),
+          ),
+          child: child!,
+        );
+      },
+    );
+
+    if (pickedDate != null) {
+      setState(() {
+        _startDateController.text = "${pickedDate.year}-${pickedDate.month}-${pickedDate.day}";
+      });
+    }
+  }
+
+  Future<void> _selectEndDate(BuildContext context) async {
+    final DateTime? pickedDate = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(), // Fecha inicial
+      firstDate: DateTime.now().add(const Duration(days: 1)),   // Fecha mínima
+      lastDate: DateTime.now().add(const Duration(days: 100)),   // Fecha máxima
+      builder: (BuildContext context, Widget? child) {
+        return Theme(
+          data: Theme.of(context).copyWith(
+            colorScheme: ColorScheme.light(
+              primary: Colors.blueAccent, // Color principal
+              onPrimary: Colors.white, // Color de texto en el botón seleccionado
+              onSurface: Colors.black, // Color del texto del calendario
+            ),
+            textButtonTheme: TextButtonThemeData(
+              style: TextButton.styleFrom(
+                foregroundColor: Colors.blueAccent, // Color de los botones (CANCELAR/OK)
+              ),
+            ),
+          ),
+          child: child!,
+        );
+      },
+    );
+
+    if (pickedDate != null) {
+      setState(() {
+        _endDateController.text = "${pickedDate.year}-${pickedDate.month}-${pickedDate.day}";
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -119,6 +183,8 @@ class _PrescriptionFormState extends State<PrescriptionForm> {
                   margin: const EdgeInsets.only(bottom: 16.0),
                   child: TextFormField(
                     controller: _startDateController,
+                    onTap: () => _selectStartDate(context),
+                    readOnly: true,
                     decoration: InputDecoration(
                       labelText: 'Start Date',
                       filled: true,
@@ -128,7 +194,6 @@ class _PrescriptionFormState extends State<PrescriptionForm> {
                       ),
                       contentPadding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 16.0),
                     ),
-                    keyboardType: TextInputType.datetime,
                     validator: (value) {
                       if (value == null || value.isEmpty) {
                         return 'Please enter a start date';
@@ -151,7 +216,8 @@ class _PrescriptionFormState extends State<PrescriptionForm> {
                       ),
                       contentPadding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 16.0),
                     ),
-                    keyboardType: TextInputType.datetime,
+                    onTap: () => _selectEndDate(context),
+                    readOnly: true,
                     validator: (value) {
                       if (value == null || value.isEmpty) {
                         return 'Please enter an end date';

@@ -93,7 +93,6 @@ class _SessionViewState extends State<SessionView> {
       return Future.error('Failed to load patients');
     }
   }
-
   void _showAddSessionDialog() {
     showDialog(
       context: context,
