@@ -65,6 +65,13 @@ class _PrescriptionFormState extends State<PrescriptionForm> {
     }
   }
 
+  String _formatDate(DateTime date) {
+    final year = date.year.toString();
+    final month = date.month.toString().padLeft(2, '0'); // Agrega un '0' si el mes tiene un solo dígito
+    final day = date.day.toString().padLeft(2, '0'); // Agrega un '0' si el día tiene un solo dígito
+    return "$year-$month-$day";
+  }
+
   Future<void> _selectStartDate(BuildContext context) async {
     final DateTime? pickedDate = await showDatePicker(
       context: context,
@@ -92,7 +99,7 @@ class _PrescriptionFormState extends State<PrescriptionForm> {
 
     if (pickedDate != null) {
       setState(() {
-        _startDateController.text = "${pickedDate.year}-${pickedDate.month}-${pickedDate.day}";
+        _startDateController.text = _formatDate(pickedDate);;
       });
     }
   }
@@ -100,7 +107,7 @@ class _PrescriptionFormState extends State<PrescriptionForm> {
   Future<void> _selectEndDate(BuildContext context) async {
     final DateTime? pickedDate = await showDatePicker(
       context: context,
-      initialDate: DateTime.now(), // Fecha inicial
+      initialDate: DateTime.now().add(const Duration(days: 1)), // Fecha inicial
       firstDate: DateTime.now().add(const Duration(days: 1)),   // Fecha mínima
       lastDate: DateTime.now().add(const Duration(days: 100)),   // Fecha máxima
       builder: (BuildContext context, Widget? child) {
@@ -124,7 +131,7 @@ class _PrescriptionFormState extends State<PrescriptionForm> {
 
     if (pickedDate != null) {
       setState(() {
-        _endDateController.text = "${pickedDate.year}-${pickedDate.month}-${pickedDate.day}";
+        _endDateController.text = _formatDate(pickedDate);
       });
     }
   }

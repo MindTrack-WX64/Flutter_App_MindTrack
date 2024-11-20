@@ -73,6 +73,13 @@ class _RegisterPageState extends State<RegisterPage> {
     }
   }
 
+  String _formatDate(DateTime date) {
+    final year = date.year.toString();
+    final month = date.month.toString().padLeft(2, '0'); // Agrega un '0' si el mes tiene un solo dígito
+    final day = date.day.toString().padLeft(2, '0'); // Agrega un '0' si el día tiene un solo dígito
+    return "$year-$month-$day";
+  }
+
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? pickedDate = await showDatePicker(
       context: context,
@@ -100,7 +107,7 @@ class _RegisterPageState extends State<RegisterPage> {
 
     if (pickedDate != null) {
       setState(() {
-        _birthDateController.text = "${pickedDate.year}-${pickedDate.month}-${pickedDate.day}";
+        _birthDateController.text = _formatDate(pickedDate);;
       });
     }
   }
