@@ -1,11 +1,40 @@
 import 'package:flutter/material.dart';
+import 'package:mind_track_flutter_app/clinical-history/UI/pages/clinical_professional_view.dart';
 import 'package:mind_track_flutter_app/session-management/UI/pages/session_view.dart';
+
+import '../../../diagnostic/UI/pages/diagnosticView.dart';
+import '../../../shared/services/treatment_service.dart';
+
 
 class PatientMainPage extends StatelessWidget {
   final int patientId;
   final String token;
 
   PatientMainPage({required this.patientId, required this.token});
+
+  Future<void> _navigateToDiagnostic(BuildContext context, int patientId) async {
+    final treatmentService = TreatmentService();
+
+    try {
+      final treatmentPlanId = await treatmentService.getTreatmentPlanIdByPatientId(patientId, token);
+      print('Treatment plan ID: $treatmentPlanId');
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => DiagnosticView(
+            token: token,
+            treatmentId: treatmentPlanId,
+          ),
+        ),
+      );
+    } catch (e) {
+      print('Error fetching treatment plan ID: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to load treatment plan ID')),
+      );
+    }
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -28,20 +57,12 @@ class PatientMainPage extends StatelessWidget {
           children: [
             SizedBox(height: 30),
             _buildStyledButton(
-              label: 'Diagnostic',
+              label: 'Clinical History',
               onPressed: () {
-                // Handle diagnostic button press
-              },
-            ),
-
-            SizedBox(height: 30),
-            _buildStyledButton(
-              label: 'Appointments',
-              onPressed: ( ) {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => SessionView(patientId: patientId, token: token, role: "patient"),
+                    builder: (context) => ClinicalHistoryPage(patientId: patientId,role: "patient" , token: token),
                   ),
                 );
               },
@@ -49,9 +70,10 @@ class PatientMainPage extends StatelessWidget {
 
             SizedBox(height: 30),
             _buildStyledButton(
-              label: 'Clinical History',
+              label: 'Diagnostic',
               onPressed: () {
-                // Handle diagnostic button press
+                print("patient id: $patientId");
+                _navigateToDiagnostic(context, patientId);
               },
             ),
 
@@ -59,7 +81,28 @@ class PatientMainPage extends StatelessWidget {
             _buildStyledButton(
               label: 'Prescription',
               onPressed: () {
-                // Handle diagnostic button press
+                // Handle prescription button press
+              },
+            ),
+
+            SizedBox(height: 30),
+            _buildStyledButton(
+              label: 'Task',
+              onPressed: () {
+                // Handle task button press
+              },
+            ),
+
+            SizedBox(height: 30),
+            _buildStyledButton(
+              label: 'Sessions',
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => SessionView(patientId: patientId, token: token, role: "patient"),
+                  ),
+                );
               },
             ),
           ],
@@ -92,5 +135,4 @@ class PatientMainPage extends StatelessWidget {
       ),
     );
   }
-
 }

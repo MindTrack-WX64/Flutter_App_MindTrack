@@ -172,6 +172,7 @@ class _ProfessionalPatientsPageState extends State<ProfessionalPatientsPage> {
                                             MaterialPageRoute(
                                               builder: (context) => ClinicalHistoryPage(
                                                 patientId: patient.patientId,
+                                                role: "professional",
                                                 token: widget.token,
                                               ),
                                             ),

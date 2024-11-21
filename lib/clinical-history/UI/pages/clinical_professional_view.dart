@@ -6,8 +6,9 @@ import '../../model/clinical_history_entity.dart';
 class ClinicalHistoryPage extends StatefulWidget {
   final int patientId;
   final String token;
+  final String role;
 
-  const ClinicalHistoryPage({required this.patientId, required this.token});
+  const ClinicalHistoryPage({required this.patientId, required this.role, required this.token});
 
   @override
   _ClinicalHistoryPageState createState() => _ClinicalHistoryPageState();
@@ -154,6 +155,7 @@ class _ClinicalHistoryPageState extends State<ClinicalHistoryPage> {
       appBar: AppBar(
         title: Text('Clinical History'),
         actions: [
+          if (widget.role == "professional")
           IconButton(
             icon: Icon(Icons.edit),
             onPressed: _showUpdateForm,

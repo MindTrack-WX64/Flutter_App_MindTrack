@@ -5,6 +5,9 @@ import 'package:mind_track_flutter_app/clinical-history/model/clinical_history_e
 import "package:mind_track_flutter_app/clinical-history/services/clinical_history_service.dart";
 import 'package:mind_track_flutter_app/iam/services/new_patient_service.dart';
 import 'package:mind_track_flutter_app/shared/model/patient_entity.dart';
+import 'package:mind_track_flutter_app/shared/services/treatment_service.dart';
+
+import '../../../shared/model/tratment_plan.dart';
 
 class NewPatientPage extends StatefulWidget {
   final String token;
@@ -32,6 +35,7 @@ class _NewPatientPageState extends State<NewPatientPage> {
       try {
         final patientId = await _createNewPatient();
         await _createClinicalHistory(patientId);
+        await _createTreatmentPlan(patientId, widget.professionalId);
 
         Navigator.pop(context);
         ScaffoldMessenger.of(context).showSnackBar(
@@ -61,6 +65,7 @@ class _NewPatientPageState extends State<NewPatientPage> {
     final response = await newPatientService.createPatient(newPatient, widget.token);
     final responseData = json.decode(response.body);
     return responseData['id'];
+
   }
 
   Future<void> _createClinicalHistory(int patientId) async {
@@ -74,6 +79,17 @@ class _NewPatientPageState extends State<NewPatientPage> {
     final clinicalHistoryService = ClinicalHistoryService();
     await clinicalHistoryService.createClinicalHistory(newClinicalHistory, widget.token);
   }
+  Future<void> _createTreatmentPlan(int patientId, int professionalId) async {
+    final newTreatmentPlan = TreatmentPlan.basic(
+      patientId: patientId,
+      professionalId: widget.professionalId,
+      description: " ",
+    );
+    final treatmentService = TreatmentService();
+    await treatmentService.createTreatmentPlan(newTreatmentPlan, widget.token);
+  }
+
+
 
   String _formatDate(DateTime date) {
     final year = date.year.toString();

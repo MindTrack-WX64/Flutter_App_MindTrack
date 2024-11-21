@@ -47,6 +47,7 @@ class TreatmentService extends BaseService<TreatmentPlan> {
     );
 
     if (response.statusCode == 200) {
+      print("in treatment service 1");
       final List<dynamic> treatmentPlans = json.decode(response.body);
       if (treatmentPlans.isNotEmpty) {
         final treatmentPlan = treatmentPlans[0];
