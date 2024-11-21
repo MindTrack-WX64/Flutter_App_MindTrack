@@ -74,12 +74,12 @@ class _SessionViewState extends State<SessionView> {
         final newStatus = await Permission.calendarFullAccess.request();
         if (!newStatus.isGranted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Permiso para acceder al calendario denegado')),
+            SnackBar(content: Text('Permission to access the calendar denied')),
           );
         }
       }
     } catch (e) {
-      print('Error al solicitar permiso: $e');
+      print('Error requesting permission: $e');
     }
   }
 
