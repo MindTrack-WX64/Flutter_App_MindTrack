@@ -1,5 +1,10 @@
+import 'package:device_calendar/device_calendar.dart';
+import 'package:device_calendar/device_calendar.dart';
 import 'package:flutter/material.dart';
 import 'package:mind_track_flutter_app/shared/model/patient_entity.dart';
+import 'package:timezone/timezone.dart' as tz;
+import 'package:timezone/data/latest.dart' as tz_data;
+import 'package:permission_handler/permission_handler.dart';
 
 class AddSessionDialog extends StatefulWidget {
   final TextEditingController sessionDateController;
@@ -26,12 +31,26 @@ class _AddSessionDialogState extends State<AddSessionDialog> {
   @override
   void initState() {
     super.initState();
-    // Si se pasa un solo paciente, seleccionarlo por defecto
     if (widget.patient != null) {
       _selectedPatient = widget.patient;
       widget.patientIdController.text = widget.patient!.patientId.toString();
     }
+
   }
+
+
+  Future<void> requestCalendarPermission() async {
+    var status = await Permission.calendar.status;
+    if (!status.isGranted) {
+      status = await Permission.calendar.request();
+      if (status.isGranted) {
+        print("Permiso concedido");
+      } else {
+        print("Permiso denegado");
+      }
+    }
+  }
+
 
   String _formatDate(DateTime date) {
     final year = date.year.toString();
@@ -39,6 +58,55 @@ class _AddSessionDialogState extends State<AddSessionDialog> {
     final day = date.day.toString().padLeft(2, '0'); // Agrega un '0' si el día tiene un solo dígito
     return "$year-$month-$day";
   }
+  Future<bool> _saveSessionToCalendar() async {
+    final DeviceCalendarPlugin _deviceCalendarPlugin = DeviceCalendarPlugin();
+
+    // Solicitar permisos si aún no se tienen
+    final permissionsGranted = await _deviceCalendarPlugin.requestPermissions();
+    if (permissionsGranted == null || !(permissionsGranted.data ?? false)) {
+      return false;
+    }
+
+    // Obtener calendarios disponibles
+    final calendarsResult = await _deviceCalendarPlugin.retrieveCalendars();
+    if (calendarsResult == null || calendarsResult.data == null || calendarsResult.data!.isEmpty) {
+      return false;
+    }
+
+    // Seleccionar el primer calendario
+    final calendarId = calendarsResult.data!.first.id;
+
+    // Inicializar zonas horarias
+    tz_data.initializeTimeZones();
+
+    // Convertir las fechas
+    final tz.TZDateTime startDate = tz.TZDateTime.from(
+      DateTime.parse(widget.sessionDateController.text),
+      tz.local,
+    );
+
+    final tz.TZDateTime endDate = startDate.add(Duration(hours: 1));
+
+    // Crear el evento
+    final event = Event(
+      calendarId!,
+      title: 'Sesión con ${_selectedPatient?.fullName ?? 'Paciente'}',
+      description: 'Sesión programada con el paciente.',
+      start: startDate,
+      end: endDate,
+    );
+
+    // Guardar el evento en el calendario
+    final createResult = await _deviceCalendarPlugin.createOrUpdateEvent(event);
+    if (createResult == null || createResult.isSuccess == null) {
+      return false;
+    }
+
+    return createResult.isSuccess!;
+  }
+
+
+
 
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? pickedDate = await showDatePicker(
@@ -161,20 +229,34 @@ class _AddSessionDialogState extends State<AddSessionDialog> {
         ),
         // Botón agregar
         ElevatedButton(
-          onPressed: () {
+          onPressed: () async {
             if (_selectedPatient == null) {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(content: Text('Por favor selecciona un paciente')),
               );
               return;
             }
-            widget.onRegister();
+
+            // Guarda la sesión en el calendario
+            final success = await _saveSessionToCalendar();
+            if (success) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text('Sesión guardada en el calendario')),
+              );
+            } else {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text('No se pudo guardar en el calendario')),
+              );
+            }
+
+            widget.onRegister(); // Realiza la acción original
           },
           child: Text('Agregar', style: TextStyle(color: Colors.white)),
           style: ElevatedButton.styleFrom(
             backgroundColor: Colors.blueAccent,
           ),
         ),
+
       ],
     );
   }

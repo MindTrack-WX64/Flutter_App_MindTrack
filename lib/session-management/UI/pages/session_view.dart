@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:mind_track_flutter_app/session-management/services/session_service.dart';
 import 'package:mind_track_flutter_app/shared/services/patient_service.dart';
+import 'package:permission_handler/permission_handler.dart';
 import '../../../shared/model/patient_entity.dart';
 import '../../../shared/services/professional_service.dart';
 import 'add_session_dialog.dart';
@@ -34,6 +35,7 @@ class _SessionViewState extends State<SessionView> {
     if(widget.patientId != null){
       _getPatientById(widget.patientId!);
     }
+    _checkAndRequestPermission();
 
   }
 
@@ -63,6 +65,21 @@ class _SessionViewState extends State<SessionView> {
       return sessionsWithNames;
     } catch (e) {
       return Future.error('Failed to load sessions');
+    }
+  }
+  Future<void> _checkAndRequestPermission() async {
+    try {
+      var status = await Permission.calendarFullAccess.status;
+      if (!status.isGranted) {
+        final newStatus = await Permission.calendarFullAccess.request();
+        if (!newStatus.isGranted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Permiso para acceder al calendario denegado')),
+          );
+        }
+      }
+    } catch (e) {
+      print('Error al solicitar permiso: $e');
     }
   }
 
