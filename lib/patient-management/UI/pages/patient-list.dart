@@ -186,6 +186,7 @@ class _ProfessionalPatientsPageState extends State<ProfessionalPatientsPage> {
                                             MaterialPageRoute(
                                               builder: (context) => PatientPrescriptionView(
                                                 patientId: patient.patientId,
+                                                professionalId: widget.professionalId,
                                                 token: widget.token,
                                               ),
                                             ),
