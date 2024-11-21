@@ -205,33 +205,41 @@ class _ClinicalHistoryPageState extends State<ClinicalHistoryPage> {
                 );
               } else {
                 final clinicalHistory = snapshot.data!;
-                return Container(
-                  child: Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Form(
-                      child: ListView(
-                        children: [
-                          _buildReadOnlyField(
-                            label: 'Background',
-                            value: clinicalHistory.background,
-                            icon: Icons.history,
-                          ),
-                          SizedBox(height: 16),
-                          _buildReadOnlyField(
-                            label: 'Consultation Reason',
-                            value: clinicalHistory.consultationReason,
-                            icon: Icons.note_alt_outlined,
-                          ),
-                          SizedBox(height: 16),
-                          _buildReadOnlyField(
-                            label: 'Consultation Date',
-                            value: clinicalHistory.consultationDate,
-                            icon: Icons.calendar_today,
-                          ),
-                        ],
+                return Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Card(
+                      elevation: 4.0,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10.0),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            _buildInfoRow(
+                              icon: Icons.history,
+                              label: 'Background',
+                              value: clinicalHistory.background,
+                            ),
+                            SizedBox(height: 16),
+                            _buildInfoRow(
+                              icon: Icons.note_alt_outlined,
+                              label: 'Consultation Reason',
+                              value: clinicalHistory.consultationReason,
+                            ),
+                            SizedBox(height: 16),
+                            _buildInfoRow(
+                              icon: Icons.calendar_today,
+                              label: 'Consultation Date',
+                              value: clinicalHistory.consultationDate,
+                            ),
+                          ],
+                        ),
                       ),
                     ),
-                  ),
+                  ],
                 );
               }
             },
@@ -241,24 +249,26 @@ class _ClinicalHistoryPageState extends State<ClinicalHistoryPage> {
     );
   }
 
-  Widget _buildReadOnlyField({
+  Widget _buildInfoRow({
+    required IconData icon,
     required String label,
     required String value,
-    required IconData icon,
   }) {
-    return TextFormField(
-      initialValue: value,
-      decoration: InputDecoration(
-        labelText: label,
-        prefixIcon: Icon(icon, color: Colors.blueAccent),
-        filled: true,
-        fillColor: Colors.white,
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10),
+    return Row(
+      children: [
+        Icon(icon, color: Colors.blueAccent),
+        SizedBox(width: 8.0),
+        Text(
+          '$label: ',
+          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
         ),
-      ),
-      readOnly: true,
-      maxLines: value.length > 50 ? 5 : 1,
+        Expanded(
+          child: Text(
+            value,
+            style: TextStyle(fontSize: 16),
+          ),
+        ),
+      ],
     );
   }
 }

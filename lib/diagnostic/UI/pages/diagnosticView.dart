@@ -83,11 +83,54 @@ class _DiagnosticViewState extends State<DiagnosticView> with RouteAware {
             return ListView.builder(
               itemCount: diagnostics.length,
               itemBuilder: (context, index) {
+                final parts = diagnostics[index].split('-');
+                final name = parts.length > 0 ? parts[0] : '';
+                final description = parts.length > 1 ? parts[1] : '';
+                final date = parts.length > 2 ? parts.sublist(2).join('-') : '';
+
                 return Card(
                   margin: EdgeInsets.all(8.0),
                   child: Padding(
                     padding: const EdgeInsets.all(16.0),
-                    child: Text(diagnostics[index]),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Icon(Icons.label, color: Colors.blue),
+                            SizedBox(width: 8.0),
+                            Text(
+                              name,
+                              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: 8.0),
+                        Row(
+                          children: [
+                            Icon(Icons.description, color: Colors.blue),
+                            SizedBox(width: 8.0),
+                            Expanded(
+                              child: Text(
+                                description,
+                                style: TextStyle(fontSize: 16),
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: 8.0),
+                        Row(
+                          children: [
+                            Icon(Icons.date_range, color: Colors.blue),
+                            SizedBox(width: 8.0),
+                            Text(
+                              date,
+                              style: TextStyle(fontSize: 16),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
                 );
               },
