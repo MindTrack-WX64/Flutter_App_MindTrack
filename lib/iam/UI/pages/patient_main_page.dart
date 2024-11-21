@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:mind_track_flutter_app/clinical-history/UI/pages/clinical_professional_view.dart';
+import 'package:mind_track_flutter_app/prescription-management/UI/pages/patient_prescription_view.dart';
 import 'package:mind_track_flutter_app/session-management/UI/pages/session_view.dart';
+import 'package:mind_track_flutter_app/shared/model/patient_entity.dart';
+import 'package:mind_track_flutter_app/task-management/UI/pages/task_view.dart';
 
 import '../../../diagnostic/UI/pages/diagnosticView.dart';
 import '../../../shared/services/treatment_service.dart';
-
+import "package:mind_track_flutter_app/shared/services/patient_service.dart";
 
 class PatientMainPage extends StatelessWidget {
   final int patientId;
@@ -34,6 +37,25 @@ class PatientMainPage extends StatelessWidget {
       );
     }
   }
+  Future<void> _navigateToTask(BuildContext context, int patientId) async {
+    try {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => TasksPage(
+            token: token,
+            patientId: patientId,
+          ),
+        ),
+      );
+    } catch (e) {
+      print('Error fetching task plan ID: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to load task plan ID')),
+      );
+    }
+  }
+
 
 
   @override
@@ -80,8 +102,15 @@ class PatientMainPage extends StatelessWidget {
             SizedBox(height: 30),
             _buildStyledButton(
               label: 'Prescription',
-              onPressed: () {
-                // Handle prescription button press
+              onPressed: () async {
+                final patientService = PatientService();
+                Patient professionalId = await patientService.getByPatientId(patientId, token);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => PatientPrescriptionView(patientId: patientId, professionalId: professionalId.professionalId, token: token),
+                  ),
+                );
               },
             ),
 
@@ -89,7 +118,7 @@ class PatientMainPage extends StatelessWidget {
             _buildStyledButton(
               label: 'Task',
               onPressed: () {
-                // Handle task button press
+                _navigateToTask(context, patientId);
               },
             ),
 

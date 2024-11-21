@@ -3,7 +3,7 @@ import 'package:intl/intl.dart';
 import 'package:mind_track_flutter_app/prescription-management/UI/pages/pills_view.dart';
 import 'package:mind_track_flutter_app/prescription-management/service/prescription_service.dart';
 import 'package:mind_track_flutter_app/shared/services/patient_service.dart';
-import 'package:mind_track_flutter_app/shared/model/patient_entity.dart';
+
 
 class PatientPrescriptionView extends StatefulWidget {
   final int patientId;
