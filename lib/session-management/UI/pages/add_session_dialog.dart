@@ -33,6 +33,51 @@ class _AddSessionDialogState extends State<AddSessionDialog> {
     }
   }
 
+  String _formatDate(DateTime date) {
+    final year = date.year.toString();
+    final month = date.month.toString().padLeft(2, '0'); // Agrega un '0' si el mes tiene un solo dígito
+    final day = date.day.toString().padLeft(2, '0'); // Agrega un '0' si el día tiene un solo dígito
+    return "$year-$month-$day";
+  }
+
+  Future<void> _selectDate(BuildContext context) async {
+    final DateTime? pickedDate = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      // Fecha inicial
+      firstDate: DateTime.now(),
+      // Fecha mínima
+      lastDate: DateTime.now().add(const Duration(days: 30)),
+      // Fecha máxima
+      builder: (BuildContext context, Widget? child) {
+        return Theme(
+          data: Theme.of(context).copyWith(
+            colorScheme: ColorScheme.light(
+              primary: Colors.blueAccent,
+              // Color principal
+              onPrimary: Colors.white,
+              // Color de texto en el botón seleccionado
+              onSurface: Colors.black, // Color del texto del calendario
+            ),
+            textButtonTheme: TextButtonThemeData(
+              style: TextButton.styleFrom(
+                foregroundColor: Colors
+                    .blueAccent, // Color de los botones (CANCELAR/OK)
+              ),
+            ),
+          ),
+          child: child!,
+        );
+      },
+    );
+
+    if (pickedDate != null) {
+      setState(() {
+        widget.sessionDateController.text = _formatDate(pickedDate);
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     // Si no se pasa un paciente específico, usamos la lista
@@ -58,7 +103,8 @@ class _AddSessionDialogState extends State<AddSessionDialog> {
                   borderSide: BorderSide(color: Colors.blueAccent),
                 ),
               ),
-              keyboardType: TextInputType.datetime,
+              onTap: () => _selectDate(context),
+              readOnly: true,
             ),
             SizedBox(height: 16.0),
 

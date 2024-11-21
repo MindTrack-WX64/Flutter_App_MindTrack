@@ -198,7 +198,7 @@ class _SessionViewState extends State<SessionView> {
                       'Date: $formattedDate',
                       style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                     ),
-                    subtitle: Text(
+                    subtitle: Text(//Genera unknown si no se encuentra el nombre. Podriamos eliminarlo
                       'Name: ${session['associatedName']}',
                       style: TextStyle(fontSize: 14, color: Colors.grey[600]),
                     ),
