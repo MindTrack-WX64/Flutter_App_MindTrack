@@ -5,13 +5,15 @@ class AddSessionDialog extends StatefulWidget {
   final TextEditingController sessionDateController;
   final TextEditingController patientIdController;
   final VoidCallback onRegister;
-  final List<Patient> patientNames;
+  final List<Patient>? patientNames;
+  final Patient? patient;
 
   AddSessionDialog({
     required this.sessionDateController,
     required this.patientIdController,
     required this.onRegister,
-    required this.patientNames,
+    this.patientNames,
+    this.patient,
   });
 
   @override
@@ -131,5 +133,3 @@ class _AddSessionDialogState extends State<AddSessionDialog> {
     );
   }
 }
-
-
