@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:mind_track_flutter_app/clinical-history/UI/pages/clinical_professional_view.dart';
 import 'package:mind_track_flutter_app/diagnostic/UI/pages/diagnosticView.dart';
 import 'package:mind_track_flutter_app/iam/UI/pages/new_patient_page.dart';
-import 'package:mind_track_flutter_app/prescription-management/UI/pages/prescription_view.dart';
+import 'package:mind_track_flutter_app/prescription-management/UI/pages/patient_prescription_view.dart';
+import 'package:mind_track_flutter_app/session-management/UI/pages/patient_session_view.dart';
 import 'package:mind_track_flutter_app/session-management/UI/pages/session_view.dart';
 import 'package:mind_track_flutter_app/shared/model/patient_entity.dart';
 import 'package:mind_track_flutter_app/shared/services/patient_service.dart';
@@ -180,18 +181,16 @@ class _ProfessionalPatientsPageState extends State<ProfessionalPatientsPage> {
                                           _navigateToDiagnostics(context, patient.patientId);
                                           break;
                                         case 'Prescription':
-                                          /*
-                                            Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                builder: (context) => PrescriptionView(
-                                                  patientId: patient.patientId,
-                                                  professionalId: widget.professionalId,
-                                                  token: widget.token,
-                                                ),
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) => PatientPrescriptionView(
+                                                patientId: patient.patientId,
+                                                token: widget.token,
                                               ),
-                                            );
-                                          */
+                                            ),
+                                          );
+
                                           break;
                                         case 'Tasks':
                                           Navigator.push(
@@ -210,8 +209,8 @@ class _ProfessionalPatientsPageState extends State<ProfessionalPatientsPage> {
                                             MaterialPageRoute(
                                               builder: (context) => SessionView(
                                                 patientId: patient.patientId,
-                                                professionalId: widget.professionalId,
                                                 token: widget.token,
+                                                role: "professional",
                                               ),
                                             ),
                                           );

@@ -6,7 +6,7 @@ class ClinicalHistoryPage extends StatefulWidget {
   final int patientId;
   final String token;
 
-  ClinicalHistoryPage({required this.patientId, required this.token});
+  const ClinicalHistoryPage({required this.patientId, required this.token});
 
   @override
   _ClinicalHistoryPageState createState() => _ClinicalHistoryPageState();
