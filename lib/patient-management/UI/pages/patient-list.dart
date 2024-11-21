@@ -109,6 +109,8 @@ class _ProfessionalPatientsPageState extends State<ProfessionalPatientsPage> {
                           child: Row(
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
+                              Icon(Icons.person, size: 50, color: Colors.blue),
+                              SizedBox(width: 10),
                               Expanded(
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -121,9 +123,20 @@ class _ProfessionalPatientsPageState extends State<ProfessionalPatientsPage> {
                                       ),
                                       subtitle: Column(
                                         crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          Text('Phone: ${patient.phone}'),
-                                          Text('Age: ${_calculateAge(patient.birthDate.toString())}'),
+                                        children: [Row(
+                                          children: [
+                                            Icon(Icons.phone, size: 16, color: Colors.grey),
+                                            SizedBox(width: 5),
+                                            Text('Phone: ${patient.phone}'),
+                                          ],
+                                        ),
+                                          Row(
+                                            children: [
+                                              Icon(Icons.cake, size: 16, color: Colors.grey),
+                                              SizedBox(width: 5),
+                                              Text('Age: ${_calculateAge(patient.birthDate.toString())}'),
+                                            ],
+                                          ),
                                         ],
                                       ),
                                     ),
