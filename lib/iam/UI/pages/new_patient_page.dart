@@ -64,7 +64,7 @@ class _NewPatientPageState extends State<NewPatientPage> {
   }
 
   Future<void> _createClinicalHistory(int patientId) async {
-    final newClinicalHistory = ClinicalHistory(
+    final newClinicalHistory = ClinicalHistory.basic(
       patientId: patientId,
       background: _backgroundController.text,
       consultationReason: _consultationReasonController.text,

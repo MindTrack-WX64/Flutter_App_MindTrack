@@ -34,17 +34,40 @@ class ClinicalHistoryService extends BaseService<ClinicalHistory> {
         'Authorization': 'Bearer $token',
       },
     );
+    print(response.body);
+    print("patientId: $patientId");
 
     if (response.statusCode == 200) {
       final List<dynamic> clinicalHistoryList = json.decode(response.body);
       if (clinicalHistoryList.isNotEmpty) {
         final Map<String, dynamic> clinicalHistory = clinicalHistoryList[0];
-        return ClinicalHistory.fromJson(clinicalHistory);
+        return ClinicalHistory.fromJsonBasic(clinicalHistory);
       } else {
         throw Exception('Clinical history list is empty');
       }
     } else {
       throw Exception('Failed to load clinical history');
+    }
+  }
+  Future<ClinicalHistory> updateById(int clinicalId, String token, String background, String consultationReason) async {
+    final body = json.encode({
+      'background': background,
+      'consultationReason': consultationReason,
+    });
+
+    final response = await http.put(
+      Uri.parse('$apiUrl$resourceEndpoint/$clinicalId'),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+      body: body,
+    );
+
+    if (response.statusCode == 200) {
+      return ClinicalHistory.fromJson(json.decode(response.body));
+    } else {
+      throw Exception('Failed to update clinical history');
     }
   }
 
